@@ -1,0 +1,30 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"4": "block/grass/grass_block/grass_block_top_2_test"
+	},
+	"elements": [
+		{
+			"from": [8, 16, -3],
+			"to": [8, 23, 19],
+			"shade": false,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 12, 8]},
+			"faces": {
+				"east": {"uv": [0, 9.04545, 11, 16], "texture": "#4", "cullface": "up", "tintindex": 0},
+				"west": {"uv": [0, 9, 11, 16], "texture": "#4", "cullface": "up", "tintindex": 0}
+			}
+		},
+		{
+			"from": [-3, 16, 8],
+			"to": [19, 23, 8],
+			"shade": false,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 12, 8]},
+			"faces": {
+				"north": {"uv": [0, 9, 11, 16], "texture": "#4", "cullface": "up", "tintindex": 0},
+				"south": {"uv": [0, 9, 11, 16], "texture": "#4", "cullface": "up", "tintindex": 0}
+			}
+		}
+	]
+}

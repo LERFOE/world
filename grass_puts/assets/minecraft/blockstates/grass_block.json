@@ -1,0 +1,23 @@
+{
+  "multipart": [
+    {
+      "apply": {"model": "minecraft:block/grass_block"},
+      "when": {"snowy": "false"}
+    },
+    {
+      "apply": [
+	  {"model": "minecraft:block/grass/grass_block/grass_block_top0", "weight":1},
+	  {"model": "minecraft:block/grass/grass_block/grass_block_top1", "weight":1},
+	  {"model": "minecraft:block/grass/grass_block/grass_block_top2", "weight":1},
+	  {"model": "minecraft:block/grass/grass_block/grass_block_top3", "weight":1},
+	  {"model": "minecraft:block/grass/grass_block/grass_block_top4", "weight":1}
+	  ],
+      "when": {"snowy": "false"}
+    },
+
+	{
+      "apply": {"model": "minecraft:block/grass_block_snow"},
+	  "when": {"snowy": "true"}
+    }
+  ]
+}

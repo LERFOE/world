@@ -1,0 +1,3 @@
+/Users/a1234/MCproject/build/_deps/glad-subbuild/CMakeFiles/glad-populate.dir
+/Users/a1234/MCproject/build/_deps/glad-subbuild/CMakeFiles/edit_cache.dir
+/Users/a1234/MCproject/build/_deps/glad-subbuild/CMakeFiles/rebuild_cache.dir

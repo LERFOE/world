@@ -1,0 +1,620 @@
+[
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -g -arch arm64 -o CMakeFiles/glad.dir/_deps/glad-src/src/glad.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glad-src/src/glad.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glad-src/src/glad.c",
+  "output": "CMakeFiles/glad.dir/_deps/glad-src/src/glad.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/src/main.cpp.o -c /Users/a1234/MCproject/src/main.cpp",
+  "file": "/Users/a1234/MCproject/src/main.cpp",
+  "output": "CMakeFiles/mycraft.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/src/shader.cpp.o -c /Users/a1234/MCproject/src/shader.cpp",
+  "file": "/Users/a1234/MCproject/src/shader.cpp",
+  "output": "CMakeFiles/mycraft.dir/src/shader.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/src/camera.cpp.o -c /Users/a1234/MCproject/src/camera.cpp",
+  "file": "/Users/a1234/MCproject/src/camera.cpp",
+  "output": "CMakeFiles/mycraft.dir/src/camera.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/src/block.cpp.o -c /Users/a1234/MCproject/src/block.cpp",
+  "file": "/Users/a1234/MCproject/src/block.cpp",
+  "output": "CMakeFiles/mycraft.dir/src/block.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/src/texture_atlas.cpp.o -c /Users/a1234/MCproject/src/texture_atlas.cpp",
+  "file": "/Users/a1234/MCproject/src/texture_atlas.cpp",
+  "output": "CMakeFiles/mycraft.dir/src/texture_atlas.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/src/world.cpp.o -c /Users/a1234/MCproject/src/world.cpp",
+  "file": "/Users/a1234/MCproject/src/world.cpp",
+  "output": "CMakeFiles/mycraft.dir/src/world.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/src/chunk.cpp.o -c /Users/a1234/MCproject/src/chunk.cpp",
+  "file": "/Users/a1234/MCproject/src/chunk.cpp",
+  "output": "CMakeFiles/mycraft.dir/src/chunk.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/src/raycast.cpp.o -c /Users/a1234/MCproject/src/raycast.cpp",
+  "file": "/Users/a1234/MCproject/src/raycast.cpp",
+  "output": "CMakeFiles/mycraft.dir/src/raycast.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/_deps/imgui-src/imgui.cpp.o -c /Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui.cpp",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui.cpp",
+  "output": "CMakeFiles/mycraft.dir/_deps/imgui-src/imgui.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/_deps/imgui-src/imgui_demo.cpp.o -c /Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui_demo.cpp",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui_demo.cpp",
+  "output": "CMakeFiles/mycraft.dir/_deps/imgui-src/imgui_demo.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/_deps/imgui-src/imgui_draw.cpp.o -c /Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui_draw.cpp",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui_draw.cpp",
+  "output": "CMakeFiles/mycraft.dir/_deps/imgui-src/imgui_draw.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/_deps/imgui-src/imgui_tables.cpp.o -c /Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui_tables.cpp",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui_tables.cpp",
+  "output": "CMakeFiles/mycraft.dir/_deps/imgui-src/imgui_tables.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/_deps/imgui-src/imgui_widgets.cpp.o -c /Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui_widgets.cpp",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/imgui_widgets.cpp",
+  "output": "CMakeFiles/mycraft.dir/_deps/imgui-src/imgui_widgets.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o -c /Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends/imgui_impl_glfw.cpp",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends/imgui_impl_glfw.cpp",
+  "output": "CMakeFiles/mycraft.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DGL_SILENCE_DEPRECATION -DIMGUI_IMPL_OPENGL_LOADER_GLAD -DMYCRAFT_PROJECT_DIR=\\\"/Users/a1234/MCproject\\\" -I/Users/a1234/MCproject/src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src -I/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends -I/Users/a1234/MCproject/build-mycraft/_deps/stb-src -I/Users/a1234/MCproject/build-mycraft/_deps/glad-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64 -Wall -Wextra -Wshadow -Wconversion -Wpedantic -o CMakeFiles/mycraft.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o -c /Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends/imgui_impl_opengl3.cpp",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/imgui-src/backends/imgui_impl_opengl3.cpp",
+  "output": "CMakeFiles/mycraft.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/context.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/context.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/context.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/init.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/init.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/init.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/init.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/input.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/input.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/input.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/input.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/monitor.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/monitor.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/monitor.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/monitor.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/vulkan.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/vulkan.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/vulkan.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/vulkan.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/window.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/window.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/window.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/window.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_init.m.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_init.m",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_init.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_init.m.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_joystick.m.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_joystick.m",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_joystick.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_joystick.m.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_monitor.m.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_monitor.m",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_monitor.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_monitor.m.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_window.m.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_window.m",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_window.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_window.m.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_time.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_time.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/cocoa_time.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_time.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_thread.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/posix_thread.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/posix_thread.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/posix_thread.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/nsgl_context.m.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/nsgl_context.m",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/nsgl_context.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/nsgl_context.m.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/egl_context.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/egl_context.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/egl_context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/egl_context.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/src -g -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/osmesa_context.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/osmesa_context.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/src/osmesa_context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/osmesa_context.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/boing.dir/boing.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/boing.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/boing.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/boing.dir/boing.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/boing.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/boing.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/gears.dir/gears.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/gears.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/gears.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/gears.dir/gears.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/gears.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/gears.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/heightmap.dir/heightmap.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/heightmap.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/heightmap.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/heightmap.dir/heightmap.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/heightmap.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/heightmap.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/offscreen.dir/offscreen.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/offscreen.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/offscreen.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/offscreen.dir/offscreen.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/offscreen.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/offscreen.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/particles.dir/particles.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/particles.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/particles.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/particles.dir/particles.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/particles.dir/__/deps/tinycthread.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/tinycthread.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/tinycthread.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/particles.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/particles.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/sharing.dir/sharing.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/sharing.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/sharing.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/sharing.dir/sharing.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/sharing.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/sharing.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/simple.dir/simple.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/simple.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/simple.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/simple.dir/simple.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/simple.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/splitview.dir/splitview.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/splitview.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/splitview.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/splitview.dir/splitview.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/splitview.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/splitview.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/wave.dir/wave.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/wave.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/examples/wave.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/wave.dir/wave.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/examples",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/wave.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/wave.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/clipboard.dir/clipboard.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/clipboard.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/clipboard.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/clipboard.dir/clipboard.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/clipboard.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/clipboard.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/clipboard.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/clipboard.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/events.dir/events.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/events.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/events.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/events.dir/events.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/events.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/events.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/events.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/events.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/msaa.dir/msaa.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/msaa.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/msaa.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/msaa.dir/msaa.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/msaa.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/msaa.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/msaa.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/msaa.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/glfwinfo.dir/glfwinfo.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/glfwinfo.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/glfwinfo.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/glfwinfo.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/glfwinfo.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/glfwinfo.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/glfwinfo.dir/__/deps/glad_vulkan.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_vulkan.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_vulkan.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/glad_vulkan.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/iconify.dir/iconify.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/iconify.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/iconify.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/iconify.dir/iconify.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/iconify.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/iconify.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/iconify.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/iconify.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/monitors.dir/monitors.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/monitors.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/monitors.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/monitors.dir/monitors.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/monitors.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/monitors.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/monitors.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/monitors.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/reopen.dir/reopen.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/reopen.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/reopen.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/reopen.dir/reopen.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/reopen.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/reopen.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/cursor.dir/cursor.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/cursor.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/cursor.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/cursor.dir/cursor.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/cursor.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/cursor.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/empty.dir/empty.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/empty.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/empty.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/empty.dir/empty.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/empty.dir/__/deps/tinycthread.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/tinycthread.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/tinycthread.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/empty.dir/__/deps/tinycthread.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/empty.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/empty.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/gamma.dir/gamma.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/gamma.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/gamma.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/gamma.dir/gamma.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/gamma.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/icon.dir/icon.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/icon.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/icon.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/icon.dir/icon.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/icon.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/icon.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/inputlag.dir/inputlag.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/inputlag.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/inputlag.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/inputlag.dir/inputlag.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/inputlag.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/joysticks.dir/joysticks.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/joysticks.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/joysticks.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/joysticks.dir/joysticks.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/opacity.dir/opacity.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/opacity.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/opacity.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/opacity.dir/opacity.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/opacity.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/opacity.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/tearing.dir/tearing.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/tearing.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/tearing.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/tearing.dir/tearing.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/tearing.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/tearing.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/threads.dir/threads.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/threads.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/threads.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/threads.dir/threads.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/threads.dir/__/deps/tinycthread.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/tinycthread.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/tinycthread.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/threads.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/timeout.dir/timeout.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/timeout.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/timeout.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/timeout.dir/timeout.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/timeout.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/timeout.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/title.dir/title.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/title.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/title.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/title.dir/title.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/title.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/title.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/triangle-vulkan.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/triangle-vulkan.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_vulkan.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_vulkan.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/windows.dir/windows.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/windows.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/tests/windows.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/windows.dir/windows.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/windows.dir/__/deps/getopt.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/windows.dir/__/deps/getopt.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-build/tests",
+  "command": "/usr/bin/cc  -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps -I/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/include -g -std=gnu99 -arch arm64 -o CMakeFiles/windows.dir/__/deps/glad_gl.c.o -c /Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.o"
+},
+{
+  "directory": "/Users/a1234/MCproject/build-mycraft/_deps/glm-build/glm",
+  "command": "/usr/bin/c++  -I/Users/a1234/MCproject/build-mycraft/_deps/glm-src -g -std=c++17 -arch arm64 -Wno-c++98-compat -Wno-c++98-compat-pedantic -o CMakeFiles/glm.dir/detail/glm.cpp.o -c /Users/a1234/MCproject/build-mycraft/_deps/glm-src/glm/detail/glm.cpp",
+  "file": "/Users/a1234/MCproject/build-mycraft/_deps/glm-src/glm/detail/glm.cpp",
+  "output": "_deps/glm-build/glm/CMakeFiles/glm.dir/detail/glm.cpp.o"
+}
+]

@@ -1,0 +1,14 @@
+# Target labels
+ glm-populate
+# Source files and their labels
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/CMakeFiles/glm-populate
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/CMakeFiles/glm-populate.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/CMakeFiles/glm-populate-complete.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-build.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-configure.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-download.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-install.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-mkdir.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-patch.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-test.rule
+/Users/a1234/MCproject/build-mycraft/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-update.rule
