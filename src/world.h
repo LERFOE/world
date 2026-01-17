@@ -16,7 +16,34 @@ class BlockRegistry;
 
 class World {
 public:
-    World(TextureAtlas& atlas, BlockRegistry& registry);
+    struct AnimalUVLayout {
+        struct Quad {
+            glm::vec2 bl{0.0f};
+            glm::vec2 br{0.0f};
+            glm::vec2 tr{0.0f};
+            glm::vec2 tl{0.0f};
+        };
+
+        struct Box {
+            Quad front;
+            Quad back;
+            Quad left;
+            Quad right;
+            Quad top;
+            Quad bottom;
+        };
+
+        // 以原版 64x32（四足动物）布局为基准：head/body/leg 均为独立 box 的 UV 展开。
+        Box head;
+        Box body;
+        Box leg;
+    };
+
+    World(TextureAtlas& atlas,
+          BlockRegistry& registry,
+          const AnimalUVLayout& pigUV,
+          const AnimalUVLayout& cowUV,
+          const AnimalUVLayout& sheepUV);
     ~World();
     
     void update(const glm::vec3& cameraPos, float dt);
@@ -39,6 +66,8 @@ public:
     glm::vec3 ambientColor() const { return ambientColor_; }
     glm::vec3 skyColor() const { return skyColor_; }
     float fogDensity() const { return fogDensity_; }
+    float daySpeed() const { return daySpeed_; }
+    void setDaySpeed(float speed) { daySpeed_ = speed; }
     glm::vec2 cloudOffset() const;
     float cloudTime() const;
 
@@ -48,6 +77,25 @@ public:
 private:
     struct CloudLayer;
     struct SunMesh;
+    struct AnimalMesh;
+
+    enum class AnimalType {
+        Pig = 0,
+        Cow = 1,
+        Sheep = 2
+    };
+
+    struct Animal {
+        AnimalType type = AnimalType::Pig;
+        glm::vec3 position{0.0f};
+        float yaw = 0.0f;          // 朝向（绕 Y 轴旋转，弧度）
+        float speed = 1.2f;        // 漫游移动速度
+        float wanderTimer = 0.0f;  // 还要直行多久后重新选方向
+        float walkPhase = 0.0f;    // 行走动画相位（随移动距离推进）
+        int seedX = 0;             // 用于伪随机的种子（出生点）
+        int seedZ = 0;
+        int wanderStep = 0;        // 随每次换向递增，保证噪声采样不同
+    };
 
     Chunk* findChunk(const ChunkCoord& coord);
     const Chunk* findChunk(const ChunkCoord& coord) const;
@@ -56,6 +104,9 @@ private:
     void rebuildMeshes(int maxPerFrame = 2);
     void cleanupChunks(const glm::vec3& cameraPos);
     void generateTerrain(Chunk& chunk);
+    void spawnAnimalsForChunk(const Chunk& chunk);
+    void updateAnimals(float dt);
+    void renderAnimals(const Shader& shader) const;
     void markNeighborsDirty(const glm::ivec3& pos);
 
     bool setBlockInternal(const glm::ivec3& pos, BlockId id);
@@ -73,6 +124,9 @@ private:
     std::deque<ChunkCoord> meshQueue_;
     std::unique_ptr<CloudLayer> clouds_;
     std::unique_ptr<SunMesh> sunMesh_;
+    std::unique_ptr<AnimalMesh> pigMesh_;
+    std::unique_ptr<AnimalMesh> cowMesh_;
+    std::unique_ptr<AnimalMesh> sheepMesh_;
 
     glm::vec3 cameraPos_{0.0f};
     glm::vec3 sunDir_{0.5f, 0.8f, 0.2f};
@@ -89,8 +143,5 @@ private:
     GLuint boundsVao_ = 0;
     GLuint boundsVbo_ = 0;
     std::vector<RenderVertex> boundsVertices_;
-};
-struct vec3
-{
-    int x,y,z;
+    std::vector<Animal> animals_;
 };

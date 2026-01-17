@@ -44,6 +44,50 @@ inline unsigned int vertexIndex(int x, int y, int z) {
     return static_cast<unsigned int>(y * Chunk::SIZE * Chunk::SIZE + z * Chunk::SIZE + x);
 }
 
+inline int vertexSign(float value) {
+    return value > 0.5f ? 1 : -1;
+}
+
+float vertexAO(const glm::ivec3& blockPos,
+               int face,
+               int vert,
+               const BlockRegistry& registry,
+               const std::function<BlockId(const glm::ivec3&)>& sampler) {
+    const glm::ivec3 faceOffset = faceOffsets[face];
+    const glm::vec3& v = faceVertices[face][vert];
+    int sx = vertexSign(v.x);
+    int sy = vertexSign(v.y);
+    int sz = vertexSign(v.z);
+
+    glm::ivec3 side1(0);
+    glm::ivec3 side2(0);
+    if (face == 0 || face == 1) { // +/-X
+        side1 = glm::ivec3(0, sy, 0);
+        side2 = glm::ivec3(0, 0, sz);
+    } else if (face == 2 || face == 3) { // +/-Y
+        side1 = glm::ivec3(sx, 0, 0);
+        side2 = glm::ivec3(0, 0, sz);
+    } else { // +/-Z
+        side1 = glm::ivec3(sx, 0, 0);
+        side2 = glm::ivec3(0, sy, 0);
+    }
+
+    glm::ivec3 base = blockPos + faceOffset;
+    bool sideOcc1 = registry.occludes(sampler(base + side1));
+    bool sideOcc2 = registry.occludes(sampler(base + side2));
+    bool cornerOcc = registry.occludes(sampler(base + side1 + side2));
+
+    int occlusion = 0;
+    if (sideOcc1) ++occlusion;
+    if (sideOcc2) ++occlusion;
+    if (cornerOcc) ++occlusion;
+    if (sideOcc1 && sideOcc2) {
+        occlusion = 3;
+    }
+
+    return 1.0f - static_cast<float>(occlusion) * 0.25f;
+}
+
 void addQuad(std::vector<RenderVertex>& vertices,
              std::vector<unsigned int>& indices,
              const glm::vec3& base,
@@ -51,7 +95,7 @@ void addQuad(std::vector<RenderVertex>& vertices,
              const glm::vec3& normal,
              const glm::vec2 uv[4],
              const glm::vec3& tint,
-             float light,
+             const std::array<float, 4>& lights,
              float material,
              float emission,
              const glm::vec3& animData) {
@@ -63,7 +107,7 @@ void addQuad(std::vector<RenderVertex>& vertices,
         v.normal = normal;
         v.uv = uv[idx];
         v.color = tint + glm::vec3(emission);
-        v.light = light;
+        v.light = lights[idx];
         v.material = material;
         v.anim = animData;
         vertices.push_back(v);
@@ -197,7 +241,8 @@ void Chunk::buildMesh(const BlockRegistry& registry,
                     continue;
                 }
                 const BlockInfo& info = registry.info(id);
-                glm::vec3 base = glm::vec3(chunkOrigin.x + x, y, chunkOrigin.z + z);
+                glm::ivec3 blockPos(chunkOrigin.x + x, y, chunkOrigin.z + z);
+                glm::vec3 base = glm::vec3(blockPos);
                 glm::vec3 tint = colorSampler(base + glm::vec3(0.5f), info);
 
                 if (info.billboard) {
@@ -233,8 +278,12 @@ void Chunk::buildMesh(const BlockRegistry& registry,
                     std::vector<RenderVertex>& targetVerts = info.transparent || info.liquid ? alphaVerts : solidVerts;
                     std::vector<unsigned int>& targetIdx = info.transparent || info.liquid ? alphaIndices : solidIndices;
 
-                    float shading = faceLight[face] + info.emission;
-                    shading = glm::clamp(shading, 0.5f, 1.4f);
+                    std::array<float, 4> lights{};
+                    for (int v = 0; v < 4; ++v) {
+                        float ao = vertexAO(blockPos, face, v, registry, sampler);
+                        float shading = faceLight[face] * ao + info.emission;
+                        lights[static_cast<std::size_t>(v)] = glm::clamp(shading, 0.2f, 1.0f);
+                    }
                     float frames = info.animation.frames > 0 ? static_cast<float>(info.animation.frames) : 1.0f;
                     float speed = info.animation.frames > 1 ? info.animation.speed : 0.0f;
                     float startIndex = static_cast<float>(info.faces[static_cast<std::size_t>(face)]);
@@ -246,7 +295,7 @@ void Chunk::buildMesh(const BlockRegistry& registry,
                             normals[face],
                             uvs,
                             tint,
-                            shading,
+                            lights,
                             info.material,
                             info.emission,
                             animData);

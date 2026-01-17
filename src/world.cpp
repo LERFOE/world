@@ -8,6 +8,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/noise.hpp>
 #include <glm/gtx/norm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <glad/glad.h>
 
@@ -47,6 +48,10 @@ float fbm(glm::vec2 uv, int octaves, float lacunarity, float gain) {
     return sum;
 }
 
+// 树生成参数（保持 generateTerrain 与 growTree 一致，避免树冠被 chunk 边界裁切）
+constexpr int kOakCanopyRadius = 4;      // growTree 水平最大扩展半径
+constexpr int kOakCanopyHalfHeight = 3;  // growTree 叶子层上下高度（dy: -2..2）
+
 } // namespace
 
 // CloudLayer: 负责生成、更新和绘制天空云层的简单网格与偏移动画。
@@ -67,6 +72,219 @@ struct World::CloudLayer {
     GLuint vao = 0;
     GLuint vbo = 0;
     GLuint ebo = 0;
+};
+
+// AnimalMesh: 分部件的四足动物网格（head/body/leg），使用专用动物贴图
+struct World::AnimalMesh {
+    struct PartMesh {
+        GLuint vao = 0;
+        GLuint vbo = 0;
+        GLuint ebo = 0;
+        GLsizei indexCount = 0;
+
+        void destroy() {
+            if (vao) {
+                glDeleteVertexArrays(1, &vao);
+                glDeleteBuffers(1, &vbo);
+                glDeleteBuffers(1, &ebo);
+                vao = 0;
+                vbo = 0;
+                ebo = 0;
+                indexCount = 0;
+            }
+        }
+
+        void draw() const {
+            glBindVertexArray(vao);
+            glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+        }
+    };
+
+    static void initBoxPart(PartMesh& part,
+                            const glm::vec3& minP,
+                            const glm::vec3& maxP,
+                            const AnimalUVLayout::Box& uv,
+                            const glm::vec3& bodyColor) {
+        RenderVertex verts[24];
+        unsigned int indices[36];
+
+        auto makeVertex = [&](int index, const glm::vec3& pos, const glm::vec3& normal, const glm::vec2& uvCoord) {
+            verts[index].pos = pos;
+            verts[index].normal = normal;
+            verts[index].uv = uvCoord;
+            verts[index].color = bodyColor;
+            verts[index].light = 1.0f;
+            verts[index].material = 4.0f; // animal
+            verts[index].anim = glm::vec3(0.0f);
+        };
+
+        const float minX = minP.x;
+        const float minY = minP.y;
+        const float minZ = minP.z;
+        const float maxX = maxP.x;
+        const float maxY = maxP.y;
+        const float maxZ = maxP.z;
+
+        // +Z front
+        makeVertex(0,  {minX, minY, maxZ}, {0.0f, 0.0f, 1.0f}, uv.front.bl);
+        makeVertex(1,  {maxX, minY, maxZ}, {0.0f, 0.0f, 1.0f}, uv.front.br);
+        makeVertex(2,  {maxX, maxY, maxZ}, {0.0f, 0.0f, 1.0f}, uv.front.tr);
+        makeVertex(3,  {minX, maxY, maxZ}, {0.0f, 0.0f, 1.0f}, uv.front.tl);
+        // -Z back
+        makeVertex(4,  {maxX, minY, minZ}, {0.0f, 0.0f, -1.0f}, uv.back.bl);
+        makeVertex(5,  {minX, minY, minZ}, {0.0f, 0.0f, -1.0f}, uv.back.br);
+        makeVertex(6,  {minX, maxY, minZ}, {0.0f, 0.0f, -1.0f}, uv.back.tr);
+        makeVertex(7,  {maxX, maxY, minZ}, {0.0f, 0.0f, -1.0f}, uv.back.tl);
+        // +X right
+        makeVertex(8,  {maxX, minY, maxZ}, {1.0f, 0.0f, 0.0f}, uv.right.bl);
+        makeVertex(9,  {maxX, minY, minZ}, {1.0f, 0.0f, 0.0f}, uv.right.br);
+        makeVertex(10, {maxX, maxY, minZ}, {1.0f, 0.0f, 0.0f}, uv.right.tr);
+        makeVertex(11, {maxX, maxY, maxZ}, {1.0f, 0.0f, 0.0f}, uv.right.tl);
+        // -X left
+        makeVertex(12, {minX, minY, minZ}, {-1.0f, 0.0f, 0.0f}, uv.left.bl);
+        makeVertex(13, {minX, minY, maxZ}, {-1.0f, 0.0f, 0.0f}, uv.left.br);
+        makeVertex(14, {minX, maxY, maxZ}, {-1.0f, 0.0f, 0.0f}, uv.left.tr);
+        makeVertex(15, {minX, maxY, minZ}, {-1.0f, 0.0f, 0.0f}, uv.left.tl);
+        // +Y top
+        makeVertex(16, {minX, maxY, maxZ}, {0.0f, 1.0f, 0.0f}, uv.top.bl);
+        makeVertex(17, {maxX, maxY, maxZ}, {0.0f, 1.0f, 0.0f}, uv.top.br);
+        makeVertex(18, {maxX, maxY, minZ}, {0.0f, 1.0f, 0.0f}, uv.top.tr);
+        makeVertex(19, {minX, maxY, minZ}, {0.0f, 1.0f, 0.0f}, uv.top.tl);
+        // -Y bottom
+        makeVertex(20, {minX, minY, minZ}, {0.0f, -1.0f, 0.0f}, uv.bottom.bl);
+        makeVertex(21, {maxX, minY, minZ}, {0.0f, -1.0f, 0.0f}, uv.bottom.br);
+        makeVertex(22, {maxX, minY, maxZ}, {0.0f, -1.0f, 0.0f}, uv.bottom.tr);
+        makeVertex(23, {minX, minY, maxZ}, {0.0f, -1.0f, 0.0f}, uv.bottom.tl);
+
+        auto quad = [&](int base, int i) {
+            indices[i + 0] = base + 0;
+            indices[i + 1] = base + 1;
+            indices[i + 2] = base + 2;
+            indices[i + 3] = base + 2;
+            indices[i + 4] = base + 3;
+            indices[i + 5] = base + 0;
+        };
+        quad(0,  0);
+        quad(4,  6);
+        quad(8,  12);
+        quad(12, 18);
+        quad(16, 24);
+        quad(20, 30);
+
+        part.destroy();
+        part.indexCount = 36;
+        glGenVertexArrays(1, &part.vao);
+        glGenBuffers(1, &part.vbo);
+        glGenBuffers(1, &part.ebo);
+
+        glBindVertexArray(part.vao);
+        glBindBuffer(GL_ARRAY_BUFFER, part.vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, part.ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(kPositionLocation);
+        glVertexAttribPointer(kPositionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), reinterpret_cast<void*>(offsetof(RenderVertex, pos)));
+        glEnableVertexAttribArray(kNormalLocation);
+        glVertexAttribPointer(kNormalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), reinterpret_cast<void*>(offsetof(RenderVertex, normal)));
+        glEnableVertexAttribArray(kUVLocation);
+        glVertexAttribPointer(kUVLocation, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), reinterpret_cast<void*>(offsetof(RenderVertex, uv)));
+        glEnableVertexAttribArray(kColorLocation);
+        glVertexAttribPointer(kColorLocation, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), reinterpret_cast<void*>(offsetof(RenderVertex, color)));
+        glEnableVertexAttribArray(kLightLocation);
+        glVertexAttribPointer(kLightLocation, 1, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), reinterpret_cast<void*>(offsetof(RenderVertex, light)));
+        glEnableVertexAttribArray(kMaterialLocation);
+        glVertexAttribPointer(kMaterialLocation, 1, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), reinterpret_cast<void*>(offsetof(RenderVertex, material)));
+        glEnableVertexAttribArray(kAnimLocation);
+        glVertexAttribPointer(kAnimLocation, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), reinterpret_cast<void*>(offsetof(RenderVertex, anim)));
+        glBindVertexArray(0);
+    }
+
+    AnimalMesh(AnimalType type, const AnimalUVLayout& uvLayout, const glm::vec3& bodyColor) {
+        const float unit = 1.0f / 16.0f;
+
+        int legW = 4;
+        int legD = 4;
+        int legH = 12;
+        int bodyW = 12;
+        int bodyH = 10;
+        int bodyD = 8;
+        int headW = 8;
+        int headH = 8;
+        int headD = 8;
+
+        switch (type) {
+            case AnimalType::Pig:
+                legH = 6;
+                bodyW = 10;
+                bodyH = 8;
+                bodyD = 8;
+                break;
+            case AnimalType::Cow:
+                legH = 12;
+                bodyW = 12;
+                bodyH = 10;
+                bodyD = 8;
+                break;
+            case AnimalType::Sheep:
+                legH = 12;
+                bodyW = 8;
+                bodyH = 8;
+                bodyD = 8;
+                break;
+        }
+
+        const glm::vec3 bodyHalf(bodyW * 0.5f * unit, bodyH * 0.5f * unit, bodyD * 0.5f * unit);
+        const glm::vec3 headHalf(headW * 0.5f * unit, headH * 0.5f * unit, headD * 0.5f * unit);
+        const glm::vec3 legHalf(legW * 0.5f * unit, legH * 0.5f * unit, legD * 0.5f * unit);
+
+        // body/head 都用中心为原点的 box
+        initBoxPart(body,
+                    {-bodyHalf.x, -bodyHalf.y, -bodyHalf.z},
+                    { bodyHalf.x,  bodyHalf.y,  bodyHalf.z},
+                    uvLayout.body,
+                    bodyColor);
+        initBoxPart(head,
+                    {-headHalf.x, -headHalf.y, -headHalf.z},
+                    { headHalf.x,  headHalf.y,  headHalf.z},
+                    uvLayout.head,
+                    bodyColor);
+        // leg 的枢轴在顶部中心：y 从 [-H, 0]
+        initBoxPart(leg,
+                    {-legHalf.x, -static_cast<float>(legH) * unit, -legHalf.z},
+                    { legHalf.x,  0.0f,                         legHalf.z},
+                    uvLayout.leg,
+                    bodyColor);
+
+        const float legTopY = legH * unit;
+        bodyPos = glm::vec3(0.0f, legTopY + bodyHalf.y, 0.0f);
+        headPos = glm::vec3(0.0f, legTopY + (bodyH == 8 ? 6.0f * unit : (bodyHalf.y + 3.0f * unit)), bodyHalf.z + headHalf.z);
+
+        float legX = glm::max(0.0f, bodyHalf.x - legHalf.x);
+        float legZ = glm::max(0.0f, bodyHalf.z - legHalf.z);
+        legPos[0] = glm::vec3(-legX, legTopY,  legZ); // front-left
+        legPos[1] = glm::vec3( legX, legTopY,  legZ); // front-right
+        legPos[2] = glm::vec3(-legX, legTopY, -legZ); // back-left
+        legPos[3] = glm::vec3( legX, legTopY, -legZ); // back-right
+    }
+
+    ~AnimalMesh() {
+        head.destroy();
+        body.destroy();
+        leg.destroy();
+    }
+
+    void drawBody() const { body.draw(); }
+    void drawHead() const { head.draw(); }
+    void drawLeg() const { leg.draw(); }
+
+    PartMesh head;
+    PartMesh body;
+    PartMesh leg;
+
+    glm::vec3 headPos{0.0f};
+    glm::vec3 bodyPos{0.0f};
+    std::array<glm::vec3, 4> legPos{glm::vec3(0.0f)};
 };
 
 // CloudLayer 构造中会填充一个覆盖大范围平面的四边形。
@@ -161,7 +379,7 @@ struct World::SunMesh {
             // 颜色偏暖，太阳色
             verts[i].color = glm::vec3(1.0f, 0.95f, 0.8f);
             verts[i].light = 1.0f;    // 太阳作为光照来源
-            verts[i].material = 4.0f; // material==4 专用于太阳/灯光渲染（shader 需识别）
+            verts[i].material = 5.0f; // material==5 专用于太阳/灯光渲染（与动物分开）
         }
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
@@ -224,8 +442,19 @@ struct World::SunMesh {
   fogDensity_   : 雾浓度，用于雾化计算。
 */
 
-World::World(TextureAtlas& atlas, BlockRegistry& registry)
-    : atlas_(atlas), registry_(registry), clouds_(std::make_unique<CloudLayer>()), sunMesh_(std::make_unique<SunMesh>()) {
+World::World(TextureAtlas& atlas,
+             BlockRegistry& registry,
+             const AnimalUVLayout& pigUV,
+             const AnimalUVLayout& cowUV,
+             const AnimalUVLayout& sheepUV)
+    : atlas_(atlas),
+      registry_(registry),
+      clouds_(std::make_unique<CloudLayer>()),
+      sunMesh_(std::make_unique<SunMesh>()),
+    pigMesh_(std::make_unique<AnimalMesh>(AnimalType::Pig, pigUV, glm::vec3(1.0f))),   // 颜色用于轻微调节贴图色调
+    cowMesh_(std::make_unique<AnimalMesh>(AnimalType::Cow, cowUV, glm::vec3(1.0f))),
+    sheepMesh_(std::make_unique<AnimalMesh>(AnimalType::Sheep, sheepUV, glm::vec3(1.0f)))
+{
     (void)atlas_;
     // 创建用于绘制 chunk 边界线的 VAO/VBO 并设置顶点布局（位置/法线/uv/color/light/material/anim）
     glGenVertexArrays(1, &boundsVao_);
@@ -271,9 +500,11 @@ void World::update(const glm::vec3& cameraPos, float dt) {
     if (clouds_) {
         clouds_->update(dt);
     }
+    // 更新动物 AI（漫游与绕行玩家）
+    updateAnimals(dt);
 }
 
-void World::render(const Shader&) const {
+void World::render(const Shader& shader) const {
     // 渲染所有非透明（solid）的 chunk
     for (const auto& [coord, chunk] : chunks_) {
         if (!chunk || chunk->empty()) {
@@ -281,6 +512,9 @@ void World::render(const Shader&) const {
         }
         chunk->renderSolid();
     }
+
+    // 渲染动物
+    renderAnimals(shader);
 }
 
 void World::renderTransparent(const Shader&) const {
@@ -476,6 +710,8 @@ void World::ensureChunksAround(const glm::vec3& cameraPos) {
             auto chunk = std::make_unique<Chunk>(coord);
             // generateTerrain: 在未加载的 chunk 中生成地形与植被
             generateTerrain(*chunk);
+            // 在该 chunk 中生成一些动物（猪/牛/羊）
+            spawnAnimalsForChunk(*chunk);
             meshQueue_.push_back(coord); // 标记需要构建 mesh
             chunks_.emplace(coord, std::move(chunk));
         }
@@ -524,60 +760,186 @@ void World::cleanupChunks(const glm::vec3& cameraPos) {
 // generateTerrain: 在指定 chunk 上生成地形高度、表面方块、水线、树木与花等
 void World::generateTerrain(Chunk& chunk) {
     glm::ivec3 origin = chunk.worldOrigin(); // chunk 在世界坐标系的左下角（最小 x,z）位置
+
+    // 先生成地形（高度图），再生成植被。
+    // 这样可以：
+    // 1) 避免树的间距过滤受 (x,z) 扫描顺序影响而偏向同一角落
+    // 2) 让“边界预留”与树冠半径保持一致，避免树总是缺一半
+    std::array<std::array<int, Chunk::SIZE>, Chunk::SIZE> heights{};
+
     for (int z = 0; z < Chunk::SIZE; ++z) {
         for (int x = 0; x < Chunk::SIZE; ++x) {
-            int worldX = origin.x + x; // 将局部 x 转为 世界 x
-            int worldZ = origin.z + z; // 同理 z
-            // uv 用于噪声采样，seed_ 用作随机偏移保证每次运行高度图差异
+            int worldX = origin.x + x;
+            int worldZ = origin.z + z;
             glm::vec2 uv = glm::vec2(worldX, worldZ) * 0.0035f + glm::vec2(seed_);
             float base = fbm(uv, 4, 2.03f, 0.55f);
             float ridges = std::abs(fbm(uv * 1.7f, 3, 2.2f, 0.52f));
-            // 基于 fbm 与 ridge 生成的地形高度（大致值）
             int height = static_cast<int>(35 + base * 18.0f + ridges * 14.0f);
             if (height < 8) height = 8;
+            heights[z][x] = height;
 
-            // 填充该列的方块：高度以下为实体（草/泥/石），高度以上为空气或水
             for (int y = 0; y < Chunk::HEIGHT; ++y) {
                 BlockId id = BlockId::Air;
                 if (y <= height) {
                     if (y == height) {
-                        id = BlockId::Grass; // 地表顶层为草方块
+                        id = BlockId::Grass;
                     } else if (y >= height - 3) {
-                        id = BlockId::Dirt;  // 地表下几层为泥土
+                        id = BlockId::Dirt;
                     } else {
-                        id = BlockId::Stone; // 更深处为石头
+                        id = BlockId::Stone;
                     }
                 } else if (y <= waterLevel_) {
-                    id = BlockId::Water; // 水面高度之下为水
+                    id = BlockId::Water;
                 }
                 chunk.setBlock(x, y, z, id);
             }
 
-            // 当地表在水面线之下时把表面设为沙子（沙滩）
             if (height <= waterLevel_) {
                 chunk.setBlock(x, height, z, BlockId::Sand);
             }
-
-            // 高海拔处覆盖雪
             if (height > 60) {
                 chunk.setBlock(x, height, z, BlockId::Snow);
             }
+        }
+    }
 
-            // 生长树/花/草的概率逻辑（基于噪声）
-            float treeMask = glm::perlin(glm::vec2(worldX, worldZ) * 0.012f + seed_ * 0.53f);
-            if (treeMask > 0.6f && height > waterLevel_ + 2 && x > 2 && x < Chunk::SIZE - 3 && z > 2 && z < Chunk::SIZE - 3) {
-                growTree(chunk, x, z, worldX, worldZ, height);
-            } else {
-                float flowerNoise = glm::perlin(glm::vec2(worldX * 1.2f, worldZ * 0.9f) * 0.07f + seed_ * 0.24f);
-                if (flowerNoise > 0.65f && height > waterLevel_ + 1) {
-                    chunk.setBlock(x, height + 1, z, BlockId::Flower);
-                } else if (flowerNoise > 0.3f && height > waterLevel_ + 1) {
-                    if (chunk.block(x, height + 1, z) == BlockId::Air) {
-                        chunk.setBlock(x, height + 1, z, BlockId::TallGrass);
+    // 植被生成：为避免“扫描顺序偏置”，对候选格做确定性打乱。
+    std::vector<std::pair<int, int>> cells;
+    cells.reserve(static_cast<std::size_t>(Chunk::SIZE * Chunk::SIZE));
+    for (int z = 0; z < Chunk::SIZE; ++z) {
+        for (int x = 0; x < Chunk::SIZE; ++x) {
+            cells.emplace_back(x, z);
+        }
+    }
+    // 基于 chunk 坐标的确定性 Fisher–Yates shuffle
+    for (int i = static_cast<int>(cells.size()) - 1; i > 0; --i) {
+        float r = noiseRand(origin.x, origin.z, 4200 + i);
+        int j = static_cast<int>(r * static_cast<float>(i + 1));
+        if (j < 0) j = 0;
+        if (j > i) j = i;
+        std::swap(cells[static_cast<std::size_t>(i)], cells[static_cast<std::size_t>(j)]);
+    }
+
+    const int spacing = 7; // 树之间的最小间距（方形邻域半径）
+    const int margin = kOakCanopyRadius; // 确保树冠不会越出 chunk
+
+    for (const auto& cell : cells) {
+        int x = cell.first;
+        int z = cell.second;
+        int height = heights[z][x];
+
+        int worldX = origin.x + x;
+        int worldZ = origin.z + z;
+
+        // 树：水面以上才生成
+        if (height > waterLevel_ + 2) {
+            // 预留足够边界，避免树冠跨出 chunk 被裁切（导致树“缺一半”且方向一致）
+            bool inside = (x >= margin && x < Chunk::SIZE - margin && z >= margin && z < Chunk::SIZE - margin);
+            if (inside) {
+                float treeMask = glm::perlin(glm::vec2(worldX, worldZ) * 0.0045f + seed_ * 0.53f);
+                float density = glm::clamp(treeMask * 0.5f + 0.5f, 0.0f, 1.0f);
+                float treeProb = glm::mix(0.005f, 0.01f, density);
+                bool treeChance = noiseRand(worldX, worldZ, 911) < treeProb;
+
+                if (treeChance) {
+                    bool hasNeighborTree = false;
+                    // 在一个小的垂直范围内找树干/树叶，避免不同地形高度时漏判
+                    int y0 = height + 1;
+                    int y1 = glm::min(height + 10, Chunk::HEIGHT - 1);
+                    for (int dz = -spacing; dz <= spacing && !hasNeighborTree; ++dz) {
+                        for (int dx = -spacing; dx <= spacing && !hasNeighborTree; ++dx) {
+                            int nx = x + dx;
+                            int nz = z + dz;
+                            if (nx < 0 || nx >= Chunk::SIZE || nz < 0 || nz >= Chunk::SIZE) continue;
+                            for (int y = y0; y <= y1; ++y) {
+                                BlockId neighbor = chunk.block(nx, y, nz);
+                                if (neighbor == BlockId::OakLog || neighbor == BlockId::OakLeaves) {
+                                    hasNeighborTree = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (!hasNeighborTree) {
+                        growTree(chunk, x, z, worldX, worldZ, height);
+                        continue; // 本格子生成了树，不再生成花/草
                     }
                 }
             }
         }
+
+        // 花/草（仅在水面以上）
+        float flowerNoise = glm::perlin(glm::vec2(worldX * 1.2f, worldZ * 0.9f) * 0.07f + seed_ * 0.24f);
+        if (flowerNoise > 0.65f && height > waterLevel_ + 1) {
+            chunk.setBlock(x, height + 1, z, BlockId::Flower);
+        } else if (flowerNoise > 0.3f && height > waterLevel_ + 1) {
+            if (chunk.block(x, height + 1, z) == BlockId::Air) {
+                chunk.setBlock(x, height + 1, z, BlockId::TallGrass);
+            }
+        }
+    }
+}
+
+// 在给定 chunk 内随机生成若干动物（猪/牛/羊）
+void World::spawnAnimalsForChunk(const Chunk& chunk) {
+    ChunkCoord coord = chunk.coord();
+    // 基于 chunk 坐标的噪声决定本 chunk 大致动物数量（0~3 只）
+    float noise = noiseRand(coord.x * 13, coord.z * 17, 1337);
+    int maxAnimals = 0;
+    if (noise > 0.8f) {
+        maxAnimals = 2;
+    } else if (noise > 0.55f) {
+        maxAnimals = 2;
+    } else if (noise > 0.4f) {
+        maxAnimals = 1;
+    }
+    if (maxAnimals == 0) return;
+
+    glm::ivec3 origin = chunk.worldOrigin();
+    for (int i = 0; i < maxAnimals; ++i) {
+        // 在 chunk 内挑一个相对安全的位置（避开边界 2 格）
+        float rx = noiseRand(coord.x * 31 + i * 7, coord.z * 29 + i * 5, 200);
+        float rz = noiseRand(coord.x * 37 + i * 11, coord.z * 23 + i * 3, 400);
+        int localX = 2 + static_cast<int>(rx * (Chunk::SIZE - 4));
+        int localZ = 2 + static_cast<int>(rz * (Chunk::SIZE - 4));
+
+        // 向下扫描找到地面高度（忽略空气和水）
+        int groundY = -1;
+        for (int y = Chunk::HEIGHT - 2; y >= 1; --y) {
+            BlockId id = chunk.block(localX, y, localZ);
+            if (id != BlockId::Air && id != BlockId::Water) {
+                groundY = y;
+                break;
+            }
+        }
+        if (groundY <= waterLevel_ + 1) {
+            continue; // 水面附近不生成
+        }
+
+        int worldX = origin.x + localX;
+        int worldZ = origin.z + localZ;
+
+        Animal animal{};
+        float typeR = noiseRand(worldX, worldZ, 777);
+        if (typeR < 0.33f) {
+            animal.type = AnimalType::Pig;
+        } else if (typeR < 0.66f) {
+            animal.type = AnimalType::Cow;
+        } else {
+            animal.type = AnimalType::Sheep;
+        }
+
+        animal.position = glm::vec3(static_cast<float>(worldX) + 0.5f,
+                                    static_cast<float>(groundY) + 1.0f,
+                                    static_cast<float>(worldZ) + 0.5f);
+        animal.yaw = noiseRand(worldX, worldZ, 888) * glm::two_pi<float>();
+        animal.speed = 1.2f + noiseRand(worldX, worldZ, 999) * 0.4f;
+        animal.wanderTimer = 2.0f + noiseRand(worldX, worldZ, 123) * 3.0f;
+        animal.seedX = worldX;
+        animal.seedZ = worldZ;
+        animal.wanderStep = 0;
+
+        animals_.push_back(animal);
     }
 }
 
@@ -589,22 +951,20 @@ glm::vec3 World::biomeColor(const glm::vec3& worldPos) const {
     float moisture = glm::clamp(glm::perlin(pos * 1.4f - 17.3f) * 0.5f + 0.5f, 0.0f, 1.0f);
     float elevation = glm::clamp(worldPos.y / 120.0f, 0.0f, 1.0f);
 
-    // 各类基色，用于混合出不同生物群系的草地颜色
-    glm::vec3 forestLow(0.37f, 0.72f, 0.46f);
-    glm::vec3 forestHigh(0.38f, 0.85f, 0.62f);
-    glm::vec3 desert(0.92f, 0.88f, 0.45f);
-    glm::vec3 swamp(0.25f, 0.48f, 0.32f);
-    glm::vec3 mountain(0.66f, 0.8f, 0.7f);
+    // 各类基色，用于混合出不同生物群系的草地颜色（使用更接近原版的颜色）
+    glm::vec3 plains(0.57f, 0.74f, 0.35f);    // 标准平原/森林绿
+    glm::vec3 desert(0.93f, 0.86f, 0.52f);    // 沙漠/热带草原黄
+    glm::vec3 swamp(0.28f, 0.32f, 0.22f);     // 沼泽暗绿
+    glm::vec3 mountain(0.6f, 0.65f, 0.55f);   // 山地/冷色调
 
-    glm::vec3 baseColor = glm::mix(forestLow, forestHigh, moisture);
-    if (temperature > 0.65f && moisture < 0.35f) {
-        baseColor = glm::mix(baseColor, desert, temperature);
-    } else if (moisture > 0.7f) {
-        baseColor = glm::mix(baseColor, swamp, moisture - 0.5f);
-    }
-    baseColor = glm::mix(baseColor, mountain, elevation * elevation);
-    baseColor.b += 0.05f; // 轻微提亮蓝色通道以获得更自然的色调
-    return glm::clamp(baseColor, glm::vec3(0.1f), glm::vec3(1.0f));
+    // 先基于湿度混合出基础绿色（从平原到沼泽）
+    glm::vec3 baseColor = glm::mix(plains, swamp, glm::smoothstep(0.4f, 0.8f, moisture));
+    // 基于温度混合沙漠色
+    baseColor = glm::mix(baseColor, desert, glm::smoothstep(0.5f, 0.9f, temperature));
+    // 最后基于海拔混合山地色
+    baseColor = glm::mix(baseColor, mountain, glm::smoothstep(0.5f, 0.9f, elevation));
+
+    return glm::clamp(baseColor, glm::vec3(0.0f), glm::vec3(1.0f));
 }
 
 // sampleTint: 根据方块信息和世界位置返回最终的 tint（顶点颜色乘积）
@@ -632,6 +992,157 @@ float World::gaussian01(int x, int z, int salt) const {
     return glm::clamp(z0 * 0.25f + 0.5f, 0.0f, 1.0f);
 }
 
+// 更新所有动物的简单 AI：在地面上漫游，并在靠近玩家时尝试绕开玩家
+void World::updateAnimals(float dt) {
+    if (animals_.empty()) return;
+
+    const float avoidRadius = 6.0f;      // 与玩家保持的最小距离
+    const float maxTurnRate = 2.5f;      // 每秒最大转向角速度（弧度）
+
+    glm::vec2 playerXZ(cameraPos_.x, cameraPos_.z);
+
+    for (Animal& a : animals_) {
+        glm::vec2 posXZ(a.position.x, a.position.z);
+        glm::vec2 toPlayer = playerXZ - posXZ;
+        float dist = glm::length(toPlayer);
+
+        bool avoiding = false;
+        if (dist > 0.001f && dist < avoidRadius) {
+            // 靠近玩家：朝与玩家相反的方向缓慢转向
+            avoiding = true;
+            glm::vec2 away = -toPlayer / dist;
+            float targetYaw = std::atan2(away.x, away.y); // yaw=0 对应 +Z 方向
+            float diff = targetYaw - a.yaw;
+            // 把角度差规范到 [-pi, pi]
+            while (diff > glm::pi<float>()) diff -= glm::two_pi<float>();
+            while (diff < -glm::pi<float>()) diff += glm::two_pi<float>();
+            float maxStep = maxTurnRate * dt;
+            diff = glm::clamp(diff, -maxStep, maxStep);
+            a.yaw += diff;
+        } else {
+            // 普通漫游：隔一段时间随机换一个方向
+            a.wanderTimer -= dt;
+            if (a.wanderTimer <= 0.0f) {
+                float dirRand = noiseRand(a.seedX, a.seedZ, 500 + a.wanderStep);
+                float durRand = noiseRand(a.seedX, a.seedZ, 700 + a.wanderStep);
+                a.wanderStep++;
+                a.yaw = (dirRand * 2.0f - 1.0f) * glm::pi<float>(); // [-pi, pi]
+                a.wanderTimer = 2.0f + durRand * 4.0f;              // 2~6 秒
+            }
+        }
+
+        float moveSpeed = avoiding ? (a.speed * 1.6f) : a.speed;
+        glm::vec3 dir(std::sin(a.yaw), 0.0f, std::cos(a.yaw));
+        glm::vec3 newPos = a.position + dir * moveSpeed * dt;
+        newPos.y = a.position.y; // 保持在同一高度（简单地跟随原始地面）
+
+        // 简单的地形碰撞和边缘检测：确保脚下有方块、身位是空气
+        auto canStandAt = [&](const glm::vec3& p) -> bool {
+            int bx = static_cast<int>(std::floor(p.x));
+            int bz = static_cast<int>(std::floor(p.z));
+            int by = static_cast<int>(std::floor(p.y));
+            if (by <= 1 || by >= Chunk::HEIGHT) return false;
+
+            BlockId below = blockAt(glm::ivec3(bx, by - 1, bz));
+            BlockId at    = blockAt(glm::ivec3(bx, by, bz));
+
+            if (below == BlockId::Air || below == BlockId::Water) return false;
+            if (at != BlockId::Air && at != BlockId::TallGrass && at != BlockId::Flower) return false;
+            return true;
+        };
+
+        if (canStandAt(newPos)) {
+            float distMoved = glm::length(glm::vec2(newPos.x - a.position.x, newPos.z - a.position.z));
+            a.position = newPos;
+
+            // 行走动画：用“移动距离”驱动相位，保证与匀速移动同步（与帧率无关）
+            float strideLen = 0.45f;
+            switch (a.type) {
+                case AnimalType::Pig:   strideLen = 0.35f; break;
+                case AnimalType::Cow:   strideLen = 0.50f; break;
+                case AnimalType::Sheep: strideLen = 0.45f; break;
+            }
+            if (distMoved > 1e-5f) {
+                float phasePerMeter = glm::two_pi<float>() / strideLen;
+                a.walkPhase += distMoved * phasePerMeter;
+                if (a.walkPhase > glm::two_pi<float>()) {
+                    a.walkPhase = std::fmod(a.walkPhase, glm::two_pi<float>());
+                }
+            }
+        } else {
+            // 受阻时，尽快重新选择行走方向
+            a.wanderTimer = 0.0f;
+        }
+    }
+}
+
+// 渲染所有动物的小立方体模型
+void World::renderAnimals(const Shader& shader) const {
+    if (animals_.empty()) {
+        return;
+    }
+    if (!pigMesh_ && !cowMesh_ && !sheepMesh_) {
+        return;
+    }
+
+    for (const Animal& a : animals_) {
+        const AnimalMesh* mesh = nullptr;
+        int kind = 0;
+        float maxLegAngle = glm::radians(32.0f);
+        switch (a.type) {
+            case AnimalType::Pig:
+                mesh = pigMesh_.get();
+                kind = 0;
+                maxLegAngle = glm::radians(36.0f);
+                break;
+            case AnimalType::Cow:
+                mesh = cowMesh_.get();
+                kind = 1;
+                maxLegAngle = glm::radians(30.0f);
+                break;
+            case AnimalType::Sheep:
+                mesh = sheepMesh_.get();
+                kind = 2;
+                maxLegAngle = glm::radians(32.0f);
+                break;
+        }
+        if (!mesh) continue;
+
+        shader.setInt("uAnimalKind", kind);
+
+        glm::mat4 base(1.0f);
+        base = glm::translate(base, a.position);
+        base = glm::rotate(base, a.yaw, glm::vec3(0.0f, 1.0f, 0.0f));
+
+        float swing = std::sin(a.walkPhase) * maxLegAngle;
+        float swingOpp = -swing;
+
+        // body
+        shader.setMat4("uModel", base * glm::translate(glm::mat4(1.0f), mesh->bodyPos));
+        mesh->drawBody();
+        // head
+        shader.setMat4("uModel", base * glm::translate(glm::mat4(1.0f), mesh->headPos));
+        mesh->drawHead();
+
+        auto drawLeg = [&](int index, float angle) {
+            glm::mat4 m = base;
+            m = glm::translate(m, mesh->legPos[static_cast<size_t>(index)]);
+            m = glm::rotate(m, angle, glm::vec3(1.0f, 0.0f, 0.0f));
+            shader.setMat4("uModel", m);
+            mesh->drawLeg();
+        };
+
+        // 0 FL, 1 FR, 2 BL, 3 BR
+        drawLeg(0, swing);
+        drawLeg(1, swingOpp);
+        drawLeg(2, swingOpp);
+        drawLeg(3, swing);
+    }
+
+    // 恢复单位矩阵，避免影响后续渲染
+    shader.setMat4("uModel", glm::mat4(1.0f));
+}
+
 // growTree: 在指定位置生成树干与树冠（简单体素树）
 // 参数说明见函数签名：chunk（目标 chunk），localX/localZ（chunk 局部 x/z），
 // worldX/worldZ（世界 x/z，用于随机函数），groundHeight（地表高度）
@@ -640,98 +1151,39 @@ void World::growTree(Chunk& chunk, int localX, int localZ, int worldX, int world
     if (baseY + 10 >= Chunk::HEIGHT) {
         return; // 防止超出 chunk 高度范围
     }
-    
-    // 1. 修改树干高度：增加高度以容纳弯曲部分 (6~9)
-    int trunkHeight = glm::clamp(6 + static_cast<int>(std::round(gaussian01(worldX, worldZ, 5) * 3.0f)), 6, 9);
 
-    // 2. 定义直树干的高度：保证下方 4 个方块是直的
-    const int straightHeight = 4;
+    // 树干高度：4~6 格，保持直立
+    int trunkHeight = glm::clamp(5 + static_cast<int>(std::round(gaussian01(worldX, worldZ, 5) * 2.0f)), 5, 8);
 
-    int currentX = localX;
-    int currentZ = localZ;
-    
-    // 记录树顶位置，用于生成树冠（因为树干可能歪了）
-    int topX = localX;
-    int topZ = localZ;
-    std::vector<vec3> directions = {
-        {0, 0, 1}, {0, 0, -1}, // 上下
-        {1, 0, 0}, {-1, 0, 0}, // 东西
-    };
-    // 下面循环在 trunkHeight 范围内尝试放置树干
+    // 直树干：仅在目标为空气/草/花/叶子时放置
     for (int i = 0; i < trunkHeight && baseY + i < Chunk::HEIGHT; ++i) {
-        // 3. 超过直树干高度后，允许随机偏移
-        if (i >= straightHeight) {
-            // 使用噪声决定是否偏移 (salt 随高度变化)
-            float drift = noiseRand(worldX, worldZ, i * 23 + 100);
-            if (drift > 0.5f) { // 50% 概率发生偏移
-                float dir = noiseRand(worldX, worldZ, i * 17 + 200);
-                if (dir < 0.25f) currentX--;
-                else if (dir < 0.5f) currentX++;
-                else if (dir < 0.75f) currentZ--;
-                else currentZ++;
-            }
-        }
-
-        // 边界检查：如果偏移出了 Chunk，停止生成（简化处理，防止越界）
-        if (currentX < 0 || currentX >= Chunk::SIZE || currentZ < 0 || currentZ >= Chunk::SIZE) {
-            trunkHeight = i; // 截断高度
-            break;
-        }
-
-        // 检查目标位置是否为空或可替换（草/花/叶子），避免嵌入石头或其他树干
-        BlockId target = chunk.block(currentX, baseY + i, currentZ);
+        BlockId target = chunk.block(localX, baseY + i, localZ);
         if (target == BlockId::Air || target == BlockId::TallGrass || target == BlockId::Flower || target == BlockId::OakLeaves) {
-            int flag=0;
-            for(const auto&[dx,dy,dz]:directions){
-                if (chunk.block(currentX+dx,baseY+i+dy,currentZ+dz)==BlockId::Air)
-                {
-                flag++;
-                }
-            }
-            if(flag==2){
-            chunk.setBlock(currentX, baseY + i, currentZ, BlockId::OakLog);
-            topX = currentX;
-            topZ = currentZ;
-            }
+            chunk.setBlock(localX, baseY + i, localZ, BlockId::OakLog);
         } else {
-            // 遇到阻碍（如其他树干），停止生长
             trunkHeight = i;
             break;
         }
     }
 
-    // 树冠生成：crownStart 为树冠开始的最低层 y
-    int crownStart = baseY + trunkHeight - 2;
-    // baseRadius: 树冠基准半径（会随位置随机扰动）
-    float baseRadius = 2.5f + gaussian01(worldX, worldZ, 11) * 1.2f;
-    
-    // 4. 围绕树顶 (topX, topZ) 生成叶子
-    for (int dy = -2; dy <= 3; ++dy) {
-        float radius = baseRadius - std::abs(static_cast<float>(dy)) * 0.6f;
-        radius = glm::max(radius, 1.0f);
-        int range = static_cast<int>(std::ceil(radius)) + 1;
+    int topY = baseY + trunkHeight - 1;
 
-        for (int dx = -range; dx <= range; ++dx) {
-            for (int dz = -range; dz <= range; ++dz) {
-                int lx = topX + dx; // 使用 topX 而不是 localX
-                int lz = topZ + dz; // 使用 topZ 而不是 localZ
-                int ly = crownStart + dy;
-                
-                // 边界检查
-                if (lx < 0 || lz < 0 || lx >= Chunk::SIZE || lz >= Chunk::SIZE || ly < 0 || ly >= Chunk::HEIGHT) {
-                    continue;
-                }
-                
-                // dist: 在水平面上的距离，用于判定是否落在树冠半径内
-                float dist = glm::length(glm::vec2(dx, dz));
-                // jitter: 小扰动，使叶子边缘更不规则
-                float jitter = (noiseRand(worldX + dx, worldZ + dz, 150 + dy) - 0.5f) * 0.4f;
-                
-                if (dist + jitter <= radius) {
-                    // 仅在空气处生成叶子，不覆盖树干
-                    if (chunk.block(lx, ly, lz) == BlockId::Air) {
-                        chunk.setBlock(lx, ly, lz, BlockId::OakLeaves);
-                    }
+    // 简单的“球形”树冠（按层缩小的方形近似）
+    const int radius = kOakCanopyRadius;
+    for (int dy = -kOakCanopyHalfHeight; dy <= kOakCanopyHalfHeight; ++dy) {
+        int y = topY + dy;
+        if (y < 0 || y >= Chunk::HEIGHT) continue;
+        int layerRadius = radius - (dy == 0 ? 0 : 1); // 中间层稍大，上下层稍小
+        for (int dx = -layerRadius; dx <= layerRadius; ++dx) {
+            int x = localX + dx;
+            if (x < 0 || x >= Chunk::SIZE) continue;
+            for (int dz = -layerRadius; dz <= layerRadius; ++dz) {
+                int z = localZ + dz;
+                if (z < 0 || z >= Chunk::SIZE) continue;
+                // 仅在可替换方块处放叶子，避免覆盖树干/石头等
+                BlockId target = chunk.block(x, y, z);
+                if (target == BlockId::Air || target == BlockId::TallGrass || target == BlockId::Flower || target == BlockId::OakLeaves) {
+                    chunk.setBlock(x, y, z, BlockId::OakLeaves);
                 }
             }
         }
@@ -794,20 +1246,44 @@ void World::markNeighborsDirty(const glm::ivec3& pos) {
 void World::updateSun(float dt) {
     // 让 timeOfDay_ 在 [0,1) 周期内循环，daySpeed_ 控制一日流逝速度
     timeOfDay_ += dt * daySpeed_;
-    if (timeOfDay_ > 1.0f) {
+    if (timeOfDay_ >= 1.0f) {
         timeOfDay_ -= 1.0f;
+    } else if (timeOfDay_ < 0.0f) {
+        timeOfDay_ += 1.0f;
     }
-    float angle = timeOfDay_ * glm::two_pi<float>();
-    // sunDir_ 计算方式：x/z 使用 cos/sin 混合得到一定偏移，y 使用 sin(angle) 来表示高度
-    sunDir_ = glm::normalize(glm::vec3(std::cos(angle) * 0.8f, std::sin(angle), std::sin(angle * 0.7f)));
-    // sunAmount: 基于太阳高度计算光照强度（0.05..1.0 范围）
-    float sunAmount = glm::clamp(sunDir_.y * 0.5f + 0.5f, 0.05f, 1.0f);
-    // sunColor_: 日出/日落偏暖色，正午偏白
-    sunColor_ = glm::mix(glm::vec3(0.9f, 0.65f, 0.4f), glm::vec3(1.0f, 0.98f, 0.92f), sunAmount);
-    // ambientColor_: 环境光颜色随太阳高度变化
-    ambientColor_ = glm::mix(glm::vec3(0.1f, 0.12f, 0.2f), glm::vec3(0.38f, 0.45f, 0.55f), sunAmount);
-    // skyColor_: 天空背景颜色随太阳高度渐变（夜晚较深，白天明亮）
-    skyColor_ = glm::mix(glm::vec3(0.05f, 0.05f, 0.1f), glm::vec3(0.55f, 0.72f, 0.92f), sunAmount);
-    // fogDensity_ 随日间减少，夜晚更浓
-    fogDensity_ = glm::mix(0.0032f, 0.0015f, sunAmount);
+
+    // 0.0 = 午夜，0.25 = 日出，0.5 = 正午，0.75 = 日落
+    float angle = (timeOfDay_ - 0.25f) * glm::two_pi<float>();
+
+    // 太阳在一个略微倾斜的平面上做圆弧运动（更自然的日出日落轨迹）
+    glm::vec3 dir(0.25f, std::sin(angle), std::cos(angle));
+    sunDir_ = glm::normalize(dir); // world->sun 方向
+
+    // 基于太阳高度（y 分量）计算直射光与环境光
+    float height = glm::clamp(sunDir_.y, -0.2f, 1.0f);
+
+    // 直射光强度：太阳在地平线以下时迅速衰减到 0
+    float direct = glm::smoothstep(0.0f, 0.25f, height);
+
+    // 太阳颜色：地平线附近偏暖色，正午接近白色
+    glm::vec3 horizonColor(0.98f, 0.72f, 0.45f);
+    glm::vec3 noonColor(1.0f, 0.98f, 0.90f);
+    float warmMix = glm::clamp((height + 0.2f) / 1.2f, 0.0f, 1.0f);
+    sunColor_ = glm::mix(horizonColor, noonColor, warmMix) * direct;
+
+    // 环境光：从夜晚的深蓝过渡到白天的淡蓝
+    glm::vec3 nightAmbient(0.02f, 0.04f, 0.08f);
+    glm::vec3 dayAmbient(0.35f, 0.43f, 0.54f);
+    float ambientFactor = glm::smoothstep(-0.3f, 0.2f, height);
+    ambientColor_ = glm::mix(nightAmbient, dayAmbient, ambientFactor);
+
+    // 天空颜色：与环境光保持一致的日夜渐变
+    glm::vec3 nightSky(0.01f, 0.015f, 0.03f);
+    glm::vec3 daySky(0.55f, 0.72f, 0.92f);
+    skyColor_ = glm::mix(nightSky, daySky, ambientFactor);
+
+    // 雾：夜晚和太阳很低时更浓，白天更稀
+    float fogDay = 0.0015f;
+    float fogNight = 0.0035f;
+    fogDensity_ = glm::mix(fogNight, fogDay, ambientFactor);
 }
