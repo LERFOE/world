@@ -27,3 +27,7 @@ CTestTestfile.cmake
 # Custom build directories
 /build-mycraft/
 *.ini
+
+# Reports to ignore
+23336126*
+World说明报告.md
