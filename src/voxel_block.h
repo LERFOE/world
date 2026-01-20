@@ -19,8 +19,21 @@ enum class BlockId : uint8_t {
     OakLeaves,
     OakPlanks,
     Glass,
-    Flower,
+    Flower,     // Poppy (Red)
+    Dandelion,  // Yellow
     TallGrass,
+    DeadBush,
+    BlueOrchid,
+    Allium,
+    AzureBluet,
+    RedTulip,
+    OrangeTulip,
+    WhiteTulip,
+    PinkTulip,
+    OxeyeDaisy,
+    Cornflower,
+    LilyOfTheValley,
+    Cactus,
     Count
 };
 

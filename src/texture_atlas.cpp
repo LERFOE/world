@@ -96,29 +96,39 @@ bool TextureAtlas::build(const std::vector<AtlasTexture>& textures) {
     int rows = static_cast<int>(std::ceil(totalFrames / static_cast<float>(cols)));
     atlasWidth_ = cols * tileSize_;
     atlasHeight_ = rows * tileSize_;
-    std::vector<unsigned char> atlasData(static_cast<std::size_t>(atlasWidth_ * atlasHeight_ * 4), 0);
-    uvRects_.assign(totalFrames, glm::vec4(0.0f));
+    
+    // Switch to GL_TEXTURE_2D_ARRAY
+    if (textureId_ == 0) {
+        glGenTextures(1, &textureId_);
+    }
+    glBindTexture(GL_TEXTURE_2D_ARRAY, textureId_);
+    
+    // Allocate 3D storage: width, height, layers
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, tileSize_, tileSize_, totalFrames, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     int cursor = 0;
+    uvRects_.resize(totalFrames); // Just to keep size consistent, though we won't use UV Rects for sub-regions anymore
+
     for (auto& entry : loaded) {
         int startIndex = cursor;
+        
+        // Upload each frame as a layer
         for (int frame = 0; frame < entry.frames; ++frame) {
-            int col = cursor % cols;
-            int row = cursor / cols;
-
-            for (int y = 0; y < tileSize_; ++y) {
-                int dstRow = row * tileSize_ + y;
-                auto* dst = &atlasData[(dstRow * atlasWidth_ + col * tileSize_) * 4];
-                int srcY = frame * tileSize_ + y;
-                auto* src = &entry.data[(srcY * entry.width) * 4];
-                std::copy(src, src + tileSize_ * 4, dst);
-            }
-
-            float u0 = (col * tileSize_ + 0.5f) / static_cast<float>(atlasWidth_);
-            float v0 = (row * tileSize_ + 0.5f) / static_cast<float>(atlasHeight_);
-            float u1 = ((col + 1) * tileSize_ - 0.5f) / static_cast<float>(atlasWidth_);
-            float v1 = ((row + 1) * tileSize_ - 0.5f) / static_cast<float>(atlasHeight_);
-            uvRects_[cursor] = glm::vec4(u0, v0, u1, v1);
+            // Source pointer for this frame
+            unsigned char* src = &entry.data[(frame * tileSize_ * entry.width) * 4];
+            // Upload to layer 'cursor'
+            // NOTE: stbi loads rows top-to-bottom, OpenGL expects bottom-to-top usually, 
+            // but we used stbi_set_flip_vertically_on_load(true) at start of function.
+            // So data is correct.
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, cursor, tileSize_, tileSize_, 1, GL_RGBA, GL_UNSIGNED_BYTE, src);
+            
+            // UVs are always 0..1 now because each tile is a full texture layer
+            uvRects_[cursor] = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
             ++cursor;
         }
 
@@ -132,28 +142,19 @@ bool TextureAtlas::build(const std::vector<AtlasTexture>& textures) {
             anim.speed = 0.0f;
         }
         animations_[entry.desc.key] = anim;
+        
         stbi_image_free(entry.data);
         entry.data = nullptr;
     }
 
-    if (textureId_ == 0) {
-        glGenTextures(1, &textureId_);
-    }
-
-    glBindTexture(GL_TEXTURE_2D, textureId_);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, atlasWidth_, atlasHeight_, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData.data());
-    glGenerateMipmap(GL_TEXTURE_2D);
+    glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 
     return true;
 }
 
 void TextureAtlas::bind(int unit) const {
     glActiveTexture(GL_TEXTURE0 + unit);
-    glBindTexture(GL_TEXTURE_2D, textureId_);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, textureId_);
 }
 
 glm::vec4 TextureAtlas::tileUV(int index) const {

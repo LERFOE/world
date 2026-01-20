@@ -13,7 +13,7 @@ in VS_OUT {
 
 out vec4 FragColor;
 
-uniform sampler2D uAtlas;
+uniform sampler2DArray uAtlas;
 uniform sampler2D uPigTex;
 uniform sampler2D uCowTex;
 uniform sampler2D uSheepTex;
@@ -35,6 +35,7 @@ uniform vec2 uAtlasSize;
 uniform vec2 uAtlasInvSize;
 uniform float uAtlasTileSize;
 uniform int uAnimalKind; // 0=pig,1=cow,2=sheep
+uniform float uAoStrength;
 
 float hash21(vec2 p) {
     p = fract(p * vec2(234.34, 435.345));
@@ -127,17 +128,14 @@ void main() {
         float animFrame = floor(uTime * speed);
         frameIndex = fs_in.anim.x + mod(animFrame, frameCount);
     }
-    float cols = uAtlasSize.x / uAtlasTileSize;
-    float row = floor(frameIndex / cols);
-    float col = frameIndex - row * cols;
-    vec2 base = vec2(col * uAtlasTileSize + 0.5, row * uAtlasTileSize + 0.5) * uAtlasInvSize;
-    vec2 extent = vec2(uAtlasTileSize - 1.0) * uAtlasInvSize;
-    vec2 atlasUV = base + fs_in.uv * extent;
+    // With GL_TEXTURE_2D_ARRAY, uv is just fs_in.uv (can be > 1.0) and layer is frameIndex
+    vec3 atlasUV = vec3(fs_in.uv, frameIndex);
 
     vec3 normal = normalize(fs_in.normal);
     vec3 viewDir = normalize(uEyePos - fs_in.fragPos);
     vec3 lightDir = normalize(uSunDir);
-    float ao = clamp(fs_in.light, 0.0, 1.0);
+    float rawAo = clamp(fs_in.light, 0.0, 1.0);
+    float ao = mix(1.0, rawAo, uAoStrength);
     vec3 color = vec3(0.0);
     float alpha = 1.0;
 
@@ -225,11 +223,17 @@ void main() {
 
     // 雾颜色随太阳高度渐变：夜晚偏深蓝，白天偏浅蓝
     float sunHeight = clamp(uSunDir.y * 0.5 + 0.5, 0.0, 1.0);
-    vec3 nightFog = vec3(0.03, 0.04, 0.08);
-    vec3 dayFog   = vec3(0.72, 0.82, 0.95);
+    vec3 nightFog = vec3(0.01, 0.01, 0.02); // Darker night
+    vec3 dayFog   = vec3(0.6, 0.75, 0.9);   // Slightly warmer blue, less "cyan"
     vec3 fogColor = mix(nightFog, dayFog, sunHeight);
 
     color = mix(color, fogColor, clamp(fogFactor, 0.0, 1.0));
+
+    // Tone Mapping (Reinhard)
+    color = color / (color + vec3(1.0));
+
+    // Gamma Correction
+    color = pow(color, vec3(1.0 / 2.2));
 
     FragColor = vec4(color, clamp(alpha, 0.0, 1.0));
 }

@@ -1,33 +1,24 @@
-# CMake 构建目录和缓存文件
-/build/
-/cmake-build-*/
-CMakeCache.txt
-CMakeFiles/
-CMakeScripts/
-Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
-/_deps/
-
-# 编译产生的中间文件
-*.o
-*.obj
-*.dylib
-*.dSYM/
-
-# macOS 系统文件
+# macOS
 .DS_Store
 
-# IDE 配置文件
-/.idea/
-/.vscode/
-*.swp
-# Custom build directories
-/build-mycraft/
-*.ini
+# CMake Build Artifacts
+build/
+build-mycraft/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.a
+*.o
+*.dylib
 
-# Reports to ignore
-23336126*
-World说明报告.md
+# IDE Settings
+.vscode/
+.idea/
+*.xcodeproj/
+*.xcworkspace/
+
+# Game Runtime Files
+imgui.ini
+saves/
+*.dat

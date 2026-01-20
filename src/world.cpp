@@ -36,7 +36,8 @@ inline int floorDiv(int value, int divisor) {
 
 // fbm: 分形布朗运动（fractal brownian motion），用于生成地形高度噪声。
 // 参数：uv（采样坐标），octaves（迭代层数），lacunarity（频率倍增），gain（振幅衰减）。
-float fbm(glm::vec2 uv, int octaves, float lacunarity, float gain) {
+// 修改为 3D 以支持种子作为第三维，避免 2D 坐标直接加种子导致浮点精度丢失
+float fbm(glm::vec3 uv, int octaves, float lacunarity, float gain) {
     float amplitude = 0.5f;
     float frequency = 1.0f;
     float sum = 0.0f;
@@ -46,6 +47,38 @@ float fbm(glm::vec2 uv, int octaves, float lacunarity, float gain) {
         amplitude *= gain;
     }
     return sum;
+}
+
+// Biome Definitions
+enum class BiomeType {
+    Ocean,
+    Beach,
+    Plains,
+    Forest,
+    Desert,
+    Mountains,
+    SnowyTundra,
+    Swamp
+};
+
+BiomeType getBiome(float temperature, float humidity, float heightScale) {
+    if (heightScale < -0.1f) return BiomeType::Ocean; // Low terrain is ocean
+    if (heightScale < -0.06f) return BiomeType::Beach;
+    
+    if (temperature > 0.5f) {
+        if (humidity < -0.2f) return BiomeType::Desert;
+        if (humidity > 0.2f) return BiomeType::Forest; // Jungle?
+        if (humidity > 0.0f && heightScale < 0.2f) return BiomeType::Swamp;
+        return BiomeType::Plains;
+    } else if (temperature < -0.4f) {
+        return BiomeType::SnowyTundra;
+    } else {
+        // Temperate
+        if (humidity > 0.3f || heightScale > 0.6f) return BiomeType::Forest;
+        if (heightScale > 0.8f) return BiomeType::Mountains;
+        if (humidity > 0.1f && heightScale < 0.2f) return BiomeType::Swamp;
+        return BiomeType::Plains;
+    }
 }
 
 // 树生成参数（保持 generateTerrain 与 growTree 一致，避免树冠被 chunk 边界裁切）
@@ -446,9 +479,11 @@ World::World(TextureAtlas& atlas,
              BlockRegistry& registry,
              const AnimalUVLayout& pigUV,
              const AnimalUVLayout& cowUV,
-             const AnimalUVLayout& sheepUV)
+             const AnimalUVLayout& sheepUV,
+             int seed)
     : atlas_(atlas),
       registry_(registry),
+      seed_(seed),
       clouds_(std::make_unique<CloudLayer>()),
       sunMesh_(std::make_unique<SunMesh>()),
     pigMesh_(std::make_unique<AnimalMesh>(AnimalType::Pig, pigUV, glm::vec3(1.0f))),   // 颜色用于轻微调节贴图色调
@@ -732,8 +767,8 @@ void World::rebuildMeshes(int maxPerFrame) {
         // sampler: 提供给 Chunk::buildMesh 的函数，用于按世界位置采样方块 id
         auto sampler = [this](const glm::ivec3& pos) { return blockAt(pos); };
         // tintSampler: 给方块提供基于生物群系的 tint（颜色）采样器
-        auto tintSampler = [this](const glm::vec3& pos, const BlockInfo& info) {
-            return sampleTint(pos, info);
+        auto tintSampler = [this](const glm::vec3& pos, BlockId id, int face) {
+            return sampleTint(pos, id, face);
         };
         chunk->buildMesh(registry_, sampler, tintSampler);
         ++built;
@@ -766,38 +801,114 @@ void World::generateTerrain(Chunk& chunk) {
     // 1) 避免树的间距过滤受 (x,z) 扫描顺序影响而偏向同一角落
     // 2) 让“边界预留”与树冠半径保持一致，避免树总是缺一半
     std::array<std::array<int, Chunk::SIZE>, Chunk::SIZE> heights{};
+    std::array<std::array<BiomeType, Chunk::SIZE>, Chunk::SIZE> biomes{};
 
     for (int z = 0; z < Chunk::SIZE; ++z) {
         for (int x = 0; x < Chunk::SIZE; ++x) {
             int worldX = origin.x + x;
             int worldZ = origin.z + z;
-            glm::vec2 uv = glm::vec2(worldX, worldZ) * 0.0035f + glm::vec2(seed_);
-            float base = fbm(uv, 4, 2.03f, 0.55f);
-            float ridges = std::abs(fbm(uv * 1.7f, 3, 2.2f, 0.52f));
-            int height = static_cast<int>(35 + base * 18.0f + ridges * 14.0f);
-            if (height < 8) height = 8;
+            // 使用 seed 作为 Z 轴，避免 x/z 坐标数值过大导致浮点精度丢失
+            glm::vec3 uv = glm::vec3(worldX * 0.002f, worldZ * 0.002f, seed_ * 0.1337f);
+            
+            // 1. Biome Factors: Temperature & Humidity
+            float tempNoise = fbm(uv * 0.5f, 2, 2.0f, 0.5f); // Low freq
+            float humidNoise = fbm(uv * 0.5f + glm::vec3(123.4f), 2, 2.0f, 0.5f);
+            
+            // 2. Continentalness / Base Height
+            // Using larger scale noise for continents/mountains
+            float continental = fbm(uv * 0.3f, 3, 2.0f, 0.5f);
+            
+            // Determine Biome
+            BiomeType biome = getBiome(tempNoise, humidNoise, continental);
+            biomes[z][x] = biome;
+
+            // 3. Height Shaping based on Biome
+            
+            // 连续地形参数计算（基于大陆性噪声），消除群系间的断层
+            float baseHeight = 35.0f + continental * 10.0f; // 基础高度随大陆性线性变化
+            float amp = 6.0f; // 基础起伏
+
+            // 山地隆起：当 continental > 0.3 时开始抬升
+            if (continental > 0.3f) {
+                float t = (continental - 0.3f); 
+                baseHeight += t * 60.0f; // 最大增加约 40-50
+                amp += t * 60.0f;        // 山地起伏增大
+            } 
+            // 海洋下沉：当 continental < -0.1 时加速下降
+            else if (continental < -0.1f) {
+                float t = -(continental + 0.1f);
+                baseHeight -= t * 20.0f; // 深海
+            }
+
+            // 湿度对地表细节的微调（森林更粗糙）
+            if (humidNoise > 0.2f) {
+                amp += (humidNoise - 0.2f) * 10.0f;
+            }
+            
+            // Canyon/River Noise (Negative vein)
+            float riverNoise = std::abs(fbm(uv * 1.5f, 4, 2.0f, 0.5f));
+            riverNoise = 1.0f - glm::smoothstep(0.02f, 0.1f, riverNoise); // 1.0 inside river, 0.0 outside
+            
+            // Detail noise
+            float detail = fbm(uv * 2.0f, 4, 2.0f, 0.5f);
+            
+            int height = static_cast<int>(baseHeight + detail * amp);
+            
+            // Cut rivers
+            if (riverNoise > 0.0f) {
+                float riverDepth = 10.0f * riverNoise;
+                height = static_cast<int>(height - riverDepth);
+            }
+            // Clamp min heigh to bedrock
+            if (height < 1) height = 1;
             heights[z][x] = height;
 
             for (int y = 0; y < Chunk::HEIGHT; ++y) {
                 BlockId id = BlockId::Air;
                 if (y <= height) {
                     if (y == height) {
-                        id = BlockId::Grass;
+                        // Top Soil Logic
+                        
+                        // 1. Natural Beaches logic:
+                        // Limit beaches to be near sea level AND near the ocean (low continentalness).
+                        // This prevents inland rivers or puddles from becoming sandy beaches everywhere.
+                        bool isBeachLevel = (height >= waterLevel_ - 2 && height <= waterLevel_ + 3);
+                        bool isOceanCoast = (continental < 0.01f); // Threshold for coastlines
+
+                        // 2. Biome specific overrides
+                        if (biome == BiomeType::Desert) {
+                            id = BlockId::Sand;
+                        } else if (biome == BiomeType::SnowyTundra) {
+                            // Cold areas have snow
+                            id = BlockId::Snow; 
+                        } else if (isBeachLevel && isOceanCoast) {
+                            // Only generate beaches at the actual ocean coast
+                            id = BlockId::Sand;
+                        } else {
+                            // Default to grass for other biomes
+                             id = BlockId::Grass;
+                        }
+
+                        // River bed is sand/gravel?
+                        if (riverNoise > 0.5f && height < waterLevel_) id = BlockId::Gravel;
                     } else if (y >= height - 3) {
-                        id = BlockId::Dirt;
+                        // Sub Soil
+                        if (biome == BiomeType::Desert || biome == BiomeType::Beach) id = BlockId::Sand;
+                        else id = BlockId::Dirt;
                     } else {
+                        // Stone
                         id = BlockId::Stone;
                     }
                 } else if (y <= waterLevel_) {
                     id = BlockId::Water;
+                    // Winter freezes water?
+                    if (biome == BiomeType::SnowyTundra && y == waterLevel_) id = BlockId::Snow; // Ice ideally
                 }
                 chunk.setBlock(x, y, z, id);
             }
-
-            if (height <= waterLevel_) {
-                chunk.setBlock(x, height, z, BlockId::Sand);
-            }
-            if (height > 60) {
+            
+            // Snow cap on tall mountains
+            if (height > 90) {
                 chunk.setBlock(x, height, z, BlockId::Snow);
             }
         }
@@ -827,33 +938,51 @@ void World::generateTerrain(Chunk& chunk) {
         int x = cell.first;
         int z = cell.second;
         int height = heights[z][x];
-
         int worldX = origin.x + x;
         int worldZ = origin.z + z;
+        BiomeType biome = biomes[z][x];
 
         // 树：水面以上才生成
         if (height > waterLevel_ + 2) {
-            // 预留足够边界，避免树冠跨出 chunk 被裁切（导致树“缺一半”且方向一致）
+            // 预留足够边界，避免树冠跨出 chunk 被裁切
             bool inside = (x >= margin && x < Chunk::SIZE - margin && z >= margin && z < Chunk::SIZE - margin);
-            if (inside) {
-                float treeMask = glm::perlin(glm::vec2(worldX, worldZ) * 0.0045f + seed_ * 0.53f);
-                float density = glm::clamp(treeMask * 0.5f + 0.5f, 0.0f, 1.0f);
-                float treeProb = glm::mix(0.005f, 0.01f, density);
+            if (inside && (biome == BiomeType::Forest || biome == BiomeType::Plains || biome == BiomeType::Swamp || biome == BiomeType::SnowyTundra)) {
+                
+                // Determine Tree Density Map
+                float treeMask = glm::perlin(glm::vec3(worldX * 0.005f, worldZ * 0.005f, seed_ * 0.1337f));
+                float baseProb = 0.01f; 
+                if (biome == BiomeType::Forest) baseProb = 0.12f; // Increased significantly for dense forests
+                else if (biome == BiomeType::Plains) baseProb = 0.005f;
+                
+                float treeProb = glm::mix(baseProb * 0.1f, baseProb * 2.0f, treeMask * 0.5f + 0.5f);
+                
+                // Use pure white noise for placement to avoid grid artifacts
                 bool treeChance = noiseRand(worldX, worldZ, 911) < treeProb;
 
                 if (treeChance) {
                     bool hasNeighborTree = false;
-                    // 在一个小的垂直范围内找树干/树叶，避免不同地形高度时漏判
+                    // Check radius (smaller radius for forests allows denser packing)
+                    int checkR = (biome == BiomeType::Forest) ? 3 : 6;
                     int y0 = height + 1;
                     int y1 = glm::min(height + 10, Chunk::HEIGHT - 1);
-                    for (int dz = -spacing; dz <= spacing && !hasNeighborTree; ++dz) {
-                        for (int dx = -spacing; dx <= spacing && !hasNeighborTree; ++dx) {
+                    for (int dz = -checkR; dz <= checkR && !hasNeighborTree; ++dz) {
+                        for (int dx = -checkR; dx <= checkR && !hasNeighborTree; ++dx) {
+                            if (dx == 0 && dz == 0) continue;
                             int nx = x + dx;
                             int nz = z + dz;
                             if (nx < 0 || nx >= Chunk::SIZE || nz < 0 || nz >= Chunk::SIZE) continue;
+                           
+                            // Simple check: Look for logic or leaves?
+                            // Actually current chunk modification is strict. 
+                            // Blocks set in previous loop.
+                            // But here we set blocks.
+                            // Checking `chunk.block` only reads what we just wrote?
+                            // No, `chunk` already has terrain filled.
+                            // We need to check if we placed a tree nearby in THIS loop?
+                            // But `chunk` is being modified.
                             for (int y = y0; y <= y1; ++y) {
                                 BlockId neighbor = chunk.block(nx, y, nz);
-                                if (neighbor == BlockId::OakLog || neighbor == BlockId::OakLeaves) {
+                                if (neighbor == BlockId::OakLog) {
                                     hasNeighborTree = true;
                                     break;
                                 }
@@ -862,20 +991,78 @@ void World::generateTerrain(Chunk& chunk) {
                     }
                     if (!hasNeighborTree) {
                         growTree(chunk, x, z, worldX, worldZ, height);
-                        continue; // 本格子生成了树，不再生成花/草
+                        continue; // Tree takes spot
                     }
                 }
             }
         }
 
-        // 花/草（仅在水面以上）
-        float flowerNoise = glm::perlin(glm::vec2(worldX * 1.2f, worldZ * 0.9f) * 0.07f + seed_ * 0.24f);
-        if (flowerNoise > 0.65f && height > waterLevel_ + 1) {
-            chunk.setBlock(x, height + 1, z, BlockId::Flower);
-        } else if (flowerNoise > 0.3f && height > waterLevel_ + 1) {
-            if (chunk.block(x, height + 1, z) == BlockId::Air) {
-                chunk.setBlock(x, height + 1, z, BlockId::TallGrass);
-            }
+        // --- Vegetation (Flowers / Grass) ---
+        // Requirement: "Interweaved random growth", not "patches".
+        // Implementation:
+        // 1. Use a low-freq noise to determine "Patch Density" (Is this a lush area?)
+        // 2. Use high-freq white noise to determine "Placement" (Individual plant)
+        // 3. Use another white noise to determine "Type" (Flower A vs Flower B)
+        
+        if (height > waterLevel_ + 1 && chunk.block(x, height + 1, z) == BlockId::Air) {
+             BlockId soil = chunk.block(x, height, z);
+             // Logic based on biome
+             if (biome == BiomeType::Desert && soil == BlockId::Sand) {
+                 if (noiseRand(worldX, worldZ, 777) < 0.005f) {
+                     chunk.setBlock(x, height+1, z, BlockId::Cactus);
+                     // Add logic for taller cactus?
+                 } else if (noiseRand(worldX, worldZ, 778) < 0.01f) {
+                    chunk.setBlock(x, height+1, z, BlockId::DeadBush);
+                 }
+             }
+             else if (soil == BlockId::Grass) { // Plains, Forest, Mountains
+                 float lushNoise = glm::perlin(glm::vec3(worldX * 0.05f, worldZ * 0.05f, seed_ * 0.1337f));  // Medium freq
+                 float lushFactor = lushNoise * 0.5f + 0.5f; // 0..1
+                 
+                 // Biome multiplier
+                 float density = 0.05f; // Base density
+                 if (biome == BiomeType::Forest) density = 0.15f; // Grassier
+                 if (biome == BiomeType::Plains) density = 0.3f;  // Very grassy/flowery
+                 
+                 // Local density modification
+                 float prob = density * lushFactor;
+                 
+                 // Roll for plant
+                 if (noiseRand(worldX, worldZ, 333) < prob) {
+                     // Pick Type: Grass or Flower?
+                     // 70% Grass, 30% Flower in Plains. 90% Grass in Forest.
+                     float flowerRatio = (biome == BiomeType::Plains) ? 0.3f : 0.05f;
+                     
+                     if (noiseRand(worldX, worldZ, 444) < flowerRatio) {
+                         // Pick specific flower (Interweaved mix)
+                         float typeR = noiseRand(worldX, worldZ, 555);
+                         BlockId flower = BlockId::Flower; // Poppy default
+                         
+                         // Palette: Poppy, Dandelion, AzureBluet, Tulips, etc.
+                         // Weighted selection
+                         if (typeR < 0.2f) flower = BlockId::Dandelion;
+                         else if (typeR < 0.3f) flower = BlockId::Flower; // Poppy
+                         else if (typeR < 0.4f) flower = BlockId::AzureBluet;
+                         else if (typeR < 0.5f) flower = BlockId::RedTulip;
+                         else if (typeR < 0.6f) flower = BlockId::OrangeTulip;
+                         else if (typeR < 0.7f) flower = BlockId::WhiteTulip;
+                         else if (typeR < 0.8f) flower = BlockId::PinkTulip;
+                         else if (typeR < 0.9f) flower = BlockId::OxeyeDaisy;
+                         else flower = BlockId::Cornflower;
+                         
+                         // Rare chance for rare flowers
+                         if (noiseRand(worldX, worldZ, 666) < 0.01f) {
+                             flower = BlockId::LilyOfTheValley;
+                         }
+                         if (biome == BiomeType::Swamp && typeR < 0.5f) flower = BlockId::BlueOrchid;
+
+                         chunk.setBlock(x, height+1, z, flower);
+                     } else {
+                         // Tall Grass
+                         chunk.setBlock(x, height+1, z, BlockId::TallGrass);
+                     }
+                 }
+             }
         }
     }
 }
@@ -886,11 +1073,10 @@ void World::spawnAnimalsForChunk(const Chunk& chunk) {
     // 基于 chunk 坐标的噪声决定本 chunk 大致动物数量（0~3 只）
     float noise = noiseRand(coord.x * 13, coord.z * 17, 1337);
     int maxAnimals = 0;
-    if (noise > 0.8f) {
+    // 降低生成概率（原为 >0.4，现改为 >0.9 以减少至约 1/6）
+    if (noise > 0.96f) {
         maxAnimals = 2;
-    } else if (noise > 0.55f) {
-        maxAnimals = 2;
-    } else if (noise > 0.4f) {
+    } else if (noise > 0.90f) {
         maxAnimals = 1;
     }
     if (maxAnimals == 0) return;
@@ -914,6 +1100,11 @@ void World::spawnAnimalsForChunk(const Chunk& chunk) {
         }
         if (groundY <= waterLevel_ + 1) {
             continue; // 水面附近不生成
+        }
+
+        // 仅允许在草方块上生成（禁止在树木、岩石、沙子上生成）
+        if (chunk.block(localX, groundY, localZ) != BlockId::Grass) {
+            continue;
         }
 
         int worldX = origin.x + localX;
@@ -946,13 +1137,17 @@ void World::spawnAnimalsForChunk(const Chunk& chunk) {
 // biomeColor: 根据世界位置计算生物群系颜色（用于草/叶的染色）
 // worldPos: 世界空间位置（通常取方块中心）
 glm::vec3 World::biomeColor(const glm::vec3& worldPos) const {
-    glm::vec2 pos = glm::vec2(worldPos.x, worldPos.z) * 0.0022f + glm::vec2(seed_ * 0.13f);
+    // 使用 3D 坐标来引入种子，避免直接在 2D 坐标上加大数值种子导致精度丢失
+    glm::vec3 pos = glm::vec3(worldPos.x * 0.0022f, worldPos.z * 0.0022f, seed_ * 0.1337f);
+    
+    // perlin 3D
     float temperature = glm::clamp(glm::perlin(pos * 0.8f + 13.7f) * 0.5f + 0.5f, 0.0f, 1.0f);
     float moisture = glm::clamp(glm::perlin(pos * 1.4f - 17.3f) * 0.5f + 0.5f, 0.0f, 1.0f);
     float elevation = glm::clamp(worldPos.y / 120.0f, 0.0f, 1.0f);
 
     // 各类基色，用于混合出不同生物群系的草地颜色（使用更接近原版的颜色）
-    glm::vec3 plains(0.57f, 0.74f, 0.35f);    // 标准平原/森林绿
+    // 为了在经过 ToneMapping 和 Gamma 校正后呈现 RGB(107, 151, 71)，输入值需要显著降低
+    glm::vec3 plains(38.0f / 255.0f, 97.0f / 255.0f, 15.0f / 255.0f); 
     glm::vec3 desert(0.93f, 0.86f, 0.52f);    // 沙漠/热带草原黄
     glm::vec3 swamp(0.28f, 0.32f, 0.22f);     // 沼泽暗绿
     glm::vec3 mountain(0.6f, 0.65f, 0.55f);   // 山地/冷色调
@@ -970,8 +1165,20 @@ glm::vec3 World::biomeColor(const glm::vec3& worldPos) const {
 // sampleTint: 根据方块信息和世界位置返回最终的 tint（顶点颜色乘积）
 // worldPos: 用于采样生物群系颜色（如果 info.biomeTint 为 true）
 // info.tint: BlockInfo 中存储的基础 tint（可被生物群系调制）
-glm::vec3 World::sampleTint(const glm::vec3& worldPos, const BlockInfo& info) const {
+glm::vec3 World::sampleTint(const glm::vec3& worldPos, BlockId id, int face) const {
+    const BlockInfo& info = registry_.info(id);
     glm::vec3 base = info.tint;
+
+    if (id == BlockId::Grass) {
+        if (face == 2) { // Top Face
+            // 使用纯生物群系颜色，不乘基础 tint，以保证颜色准确
+            return biomeColor(worldPos);
+        } else { // Sides (0,1,4,5) and Bottom (3)
+            // 强制使用泥土颜色 (#866043 -> 134, 96, 67)
+            return glm::vec3(0.525f, 0.376f, 0.263f);
+        }
+    }
+
     if (info.biomeTint) {
         base *= biomeColor(worldPos);
     }
@@ -980,9 +1187,11 @@ glm::vec3 World::sampleTint(const glm::vec3& worldPos, const BlockInfo& info) co
 
 // noiseRand / gaussian01: 用于随机性与高斯随机生成，辅助植被/地形
 float World::noiseRand(int x, int z, int salt) const {
-    glm::vec2 p = glm::vec2(x + seed_ * 0.11f + salt * 1.37f, z - seed_ * 0.17f - salt * 0.73f);
-    float value = glm::sin(glm::dot(p, glm::vec2(12.9898f, 78.233f))) * 43758.5453f;
-    return glm::fract(value);
+    // Integer hash to avoid floating point precision issues with large seeds
+    unsigned int h = (unsigned int)x * 374761393U + (unsigned int)z * 668265263U + (unsigned int)seed_ + (unsigned int)salt;
+    h = (h ^ (h >> 13)) * 1274126177U;
+    h = h ^ (h >> 16);
+    return (h & 0x7FFFFFFF) / 2147483647.0f;
 }
 
 float World::gaussian01(int x, int z, int salt) const {
@@ -1147,43 +1356,108 @@ void World::renderAnimals(const Shader& shader) const {
 // 参数说明见函数签名：chunk（目标 chunk），localX/localZ（chunk 局部 x/z），
 // worldX/worldZ（世界 x/z，用于随机函数），groundHeight（地表高度）
 void World::growTree(Chunk& chunk, int localX, int localZ, int worldX, int worldZ, int groundHeight) {
-    int baseY = groundHeight + 1; // 树干从地表上方一格开始
-    if (baseY + 10 >= Chunk::HEIGHT) {
-        return; // 防止超出 chunk 高度范围
+    int baseY = groundHeight + 1; 
+    if (baseY + 12 >= Chunk::HEIGHT) return;
+
+    // Deterministic Randomness
+    float rType = noiseRand(worldX, worldZ, 666);
+    float rHeight = noiseRand(worldX, worldZ, 123);
+    
+    // Style distribution:
+    // 0: Classic Oak (Blob) - 40%
+    // 1: Tall / Double Blob - 20%
+    // 2: Pine / Conical - 20%
+    // 3: Wide / Flat - 20%
+    int style = 0;
+    if (rType < 0.40f) style = 0;
+    else if (rType < 0.60f) style = 1;
+    else if (rType < 0.80f) style = 2;
+    else style = 3;
+
+    // Determine Trunk Height
+    int height = 4 + (int)(rHeight * 3.5f); // 4 to 7
+    if (style == 1) height += 2; // Tall trees need more height (6-9)
+    if (style == 2) height += 1; // Pines are slightly taller
+
+    // Helper: Safe Set
+    auto setIfReplaceable = [&](int x, int y, int z, BlockId id) {
+        if (x < 0 || x >= Chunk::SIZE || z < 0 || z >= Chunk::SIZE || y < 0 || y >= Chunk::HEIGHT) return;
+        BlockId current = chunk.block(x, y, z);
+        if (current == BlockId::Air || current == BlockId::TallGrass || current == BlockId::Flower || 
+            current == BlockId::OakLeaves || current == BlockId::Snow || current == BlockId::Water) {
+            chunk.setBlock(x, y, z, id);
+        }
+    };
+
+    // 1. Generate Trunk
+    for (int i = 0; i < height; ++i) {
+        setIfReplaceable(localX, baseY + i, localZ, BlockId::OakLog);
     }
 
-    // 树干高度：4~6 格，保持直立
-    int trunkHeight = glm::clamp(5 + static_cast<int>(std::round(gaussian01(worldX, worldZ, 5) * 2.0f)), 5, 8);
+    int topY = baseY + height - 1;
 
-    // 直树干：仅在目标为空气/草/花/叶子时放置
-    for (int i = 0; i < trunkHeight && baseY + i < Chunk::HEIGHT; ++i) {
-        BlockId target = chunk.block(localX, baseY + i, localZ);
-        if (target == BlockId::Air || target == BlockId::TallGrass || target == BlockId::Flower || target == BlockId::OakLeaves) {
-            chunk.setBlock(localX, baseY + i, localZ, BlockId::OakLog);
-        } else {
-            trunkHeight = i;
-            break;
+    // Helper: Draw Leaf Blob
+    auto drawBlob = [&](int cx, int cy, int cz, float radius) {
+        int rCeil = (int)ceil(radius);
+        for (int dy = -rCeil; dy <= rCeil; ++dy) {
+            for (int dx = -rCeil; dx <= rCeil; ++dx) {
+                for (int dz = -rCeil; dz <= rCeil; ++dz) {
+                    float distSq = (float)(dx*dx + dy*dy + dz*dz);
+                    // Add noise to radius to make it organic/irregular
+                    float noise = noiseRand(worldX + dx, worldZ + dz, cy + dy) * 1.5f - 0.75f; 
+                    if (distSq <= (radius + noise) * (radius + noise)) {
+                        setIfReplaceable(cx + dx, cy + dy, cz + dz, BlockId::OakLeaves);
+                    }
+                }
+            }
+        }
+    };
+
+    // 2. Generate Canopy
+    if (style == 0) { 
+        // --- Classic Oak (Irregular Blob) ---
+        drawBlob(localX, topY - 1, localZ, 2.5f);
+    } 
+    else if (style == 1) { 
+        // --- Tall / Double Blob ---
+        drawBlob(localX, topY, localZ, 2.0f);   // Top small blob
+        drawBlob(localX, topY - 3, localZ, 2.8f); // Lower big blob
+    }
+    else if (style == 2) { 
+        // --- Pine / Conical ---
+        // Tip
+        setIfReplaceable(localX, topY + 1, localZ, BlockId::OakLeaves);
+        // Layers
+        int layers = height - 2;
+        for (int i = 0; i < layers; ++i) {
+            int y = topY - i;
+            float progress = (float)i / (float)layers; // 0 (top) to 1 (bottom)
+            int radius = 1 + (int)(progress * 2.5f); // 1 to 3
+            
+            for (int dx = -radius; dx <= radius; ++dx) {
+                for (int dz = -radius; dz <= radius; ++dz) {
+                    if (dx*dx + dz*dz <= radius*radius + 1) {
+                         // Ragged edges: 20% chance to skip block
+                         if (noiseRand(worldX + dx, worldZ + dz, y) > 0.2f)
+                            setIfReplaceable(localX + dx, y, localZ + dz, BlockId::OakLeaves);
+                    }
+                }
+            }
         }
     }
-
-    int topY = baseY + trunkHeight - 1;
-
-    // 简单的“球形”树冠（按层缩小的方形近似）
-    const int radius = kOakCanopyRadius;
-    for (int dy = -kOakCanopyHalfHeight; dy <= kOakCanopyHalfHeight; ++dy) {
-        int y = topY + dy;
-        if (y < 0 || y >= Chunk::HEIGHT) continue;
-        int layerRadius = radius - (dy == 0 ? 0 : 1); // 中间层稍大，上下层稍小
-        for (int dx = -layerRadius; dx <= layerRadius; ++dx) {
-            int x = localX + dx;
-            if (x < 0 || x >= Chunk::SIZE) continue;
-            for (int dz = -layerRadius; dz <= layerRadius; ++dz) {
-                int z = localZ + dz;
-                if (z < 0 || z >= Chunk::SIZE) continue;
-                // 仅在可替换方块处放叶子，避免覆盖树干/石头等
-                BlockId target = chunk.block(x, y, z);
-                if (target == BlockId::Air || target == BlockId::TallGrass || target == BlockId::Flower || target == BlockId::OakLeaves) {
-                    chunk.setBlock(x, y, z, BlockId::OakLeaves);
+    else { 
+        // --- Wide / Flat ---
+        // 2-3 layers, very wide
+        for (int y = topY - 1; y <= topY + 1; ++y) {
+            int radius = (y == topY) ? 2 : 3;
+            if (y == topY + 1) radius = 1; // Small top
+            
+            for (int dx = -radius; dx <= radius; ++dx) {
+                for (int dz = -radius; dz <= radius; ++dz) {
+                     float dist = sqrt(dx*dx + dz*dz);
+                     if (dist <= radius + 0.4f) {
+                         setIfReplaceable(localX + dx, y, localZ + dz, BlockId::OakLeaves);
+                     }
                 }
             }
         }

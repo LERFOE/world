@@ -114,6 +114,14 @@ void BlockRegistry::build(const TextureAtlas& atlas) {
     flower.tint = glm::vec3(1.0f);
     assign(flower, texture("poppy"), texture("poppy"), texture("poppy"), texture("poppy"), texture("poppy"), texture("poppy"));
 
+    BlockInfo& dandelion = slot(BlockId::Dandelion);
+    dandelion.solid = false;
+    dandelion.transparent = true;
+    dandelion.selectable = true;
+    dandelion.billboard = true;
+    dandelion.tint = glm::vec3(1.0f);
+    assign(dandelion, texture("dandelion"), texture("dandelion"), texture("dandelion"), texture("dandelion"), texture("dandelion"), texture("dandelion"));
+
     BlockInfo& tallGrass = slot(BlockId::TallGrass);
     tallGrass.solid = false;
     tallGrass.transparent = true;
@@ -122,6 +130,39 @@ void BlockRegistry::build(const TextureAtlas& atlas) {
     tallGrass.biomeTint = true;
     tallGrass.tint = glm::vec3(1.0f);
     assign(tallGrass, texture("tall_grass"), texture("tall_grass"), texture("tall_grass"), texture("tall_grass"), texture("tall_grass"), texture("tall_grass"));
+
+    // Helper for simple flowers
+    auto registerFlower = [&](BlockId id, const std::string& texName) {
+        BlockInfo& info = slot(id);
+        info.solid = false;
+        info.transparent = true;
+        info.selectable = true;
+        info.billboard = true;
+        info.tint = glm::vec3(1.0f);
+        int t = texture(texName);
+        assign(info, t, t, t, t, t, t);
+    };
+
+    registerFlower(BlockId::DeadBush, "dead_bush");
+    registerFlower(BlockId::BlueOrchid, "blue_orchid");
+    registerFlower(BlockId::Allium, "allium");
+    registerFlower(BlockId::AzureBluet, "azure_bluet");
+    registerFlower(BlockId::RedTulip, "red_tulip");
+    registerFlower(BlockId::OrangeTulip, "orange_tulip");
+    registerFlower(BlockId::WhiteTulip, "white_tulip");
+    registerFlower(BlockId::PinkTulip, "pink_tulip");
+    registerFlower(BlockId::OxeyeDaisy, "oxeye_daisy");
+    registerFlower(BlockId::Cornflower, "cornflower");
+    registerFlower(BlockId::LilyOfTheValley, "lily_of_the_valley");
+
+    BlockInfo& cactus = slot(BlockId::Cactus);
+    cactus.solid = true;
+    cactus.transparent = true; // Not full block
+    cactus.selectable = true;
+    // Cactus model is slightly smaller than block, but we treat as solid block with texture for now or billboard? 
+    // Minecraft cactus is a block model. Let's treating it as a standard block but maybe with inset?
+    // Standard block for now to keep it simple, or reduce hit shape.
+    assign(cactus, texture("cactus_side"), texture("cactus_side"), texture("cactus_top"), texture("cactus_bottom"), texture("cactus_side"), texture("cactus_side"));
 }
 
 bool BlockRegistry::occludes(BlockId id) const {

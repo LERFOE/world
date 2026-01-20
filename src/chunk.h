@@ -57,7 +57,7 @@ public:
 
     void buildMesh(const BlockRegistry& registry,
                    const std::function<BlockId(const glm::ivec3&)>& sampler,
-                   const std::function<glm::vec3(const glm::vec3&, const BlockInfo&)>& colorSampler);
+                   const std::function<glm::vec3(const glm::vec3&, BlockId, int)>& colorSampler);
 
     void renderSolid() const;
     void renderAlpha() const;

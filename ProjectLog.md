@@ -45,4 +45,108 @@ CMakeLists 重新整理为 `project(mycraft LANGUAGES C CXX)`，集成 GLAD、GL
 - **渲染效果**：可加入阴影、使用 IBL/天空盒、屏幕空间雾、PBR 等技术让 Faithful 材质更具表现力。
 - **音效与 UI**：接入 OpenAL / SDL Mixer 播放挖掘、脚步等提示，UI 可扩展为调试面板 + 迷你地图。
 
-本日志总计约 2200 余字，详细记录了 mycraft 从架构、渲染、世界生成到交互调试的主要决策与思路，便于今后继续演进或交接。
+## 2026-01-18 更新日志：地形与植被多样性升级
+
+### 1. 复杂地形与生物群系系统
+引入了基于 **温度 (Temperature)**、**湿度 (Humidity)** 和 **大陆性 (Continentalness/HeightStr)** 的多维度噪声模型，取代了单一的高度图生成。
+- **新增 BiomeType**：实现了 Ocean, Beach, Plains, Forest, Desert, Mountains, SnowyTundra, Swamp 八大群系。
+- **河流系统**：利用负相噪声（River Noise）在地形中侵蚀出蜿蜒的河道。
+- **分布逻辑**：
+  - 高温干燥 -> 沙漠 (Desert)
+  - 极寒 -> 冻原 (SnowyTundra)
+  - 湿润 -> 森林 (Forest) 或 沼泽 (Swamp)
+  - 沿海过渡带 -> 沙滩 (Beach)
+
+### 2. 丰富植被与方块扩展
+大幅扩展了植物库，并适配 Faithful 64x 资源包材质。
+- **新方块注册**：
+  - 花卉：Poppy, Dandelion, BlueOrchid, Allium, AzureBluet, Tulips (Red/Orange/White/Pink), OxeyeDaisy, Cornflower, LilyOfTheValley。
+  - 沙漠植物：Cactus (仙人掌), DeadBush (枯灌木)。
+  - 其他：TallGrass (高草)。
+- **混种分布算法**：
+  - 摒弃了单一的成片生成，采用高频噪声进行“混织”生成，使花田呈现自然的杂色分布。
+  - **群系特异性**：
+    - 沙漠：仅生成仙人掌和枯灌木，无草皮。
+    - 森林：高密度树木，伴生少量花草。
+    - 平原：低密度树木，大片混合花海（郁金香、雏菊等）。
+    - 沼泽：生成特定的兰花 (BlueOrchid)。
+
+### 3. 可视化与材质
+- **Texture Mapping**：更新 `buildTextureList`，建立了完整的 BlockId 到 Faithful 材质 PNG 的映射表。
+- **物理与交互**：更新了 AABB 碰撞检测逻辑，增加扫掠检测（Swept AABB），解决了快速移动时的穿模问题。
+- **氛围渲染**：前期已优化了 Tone Mapping 与迷雾效果，适配不同生物群系的视觉感受。
+
+### 已知问题与优化项
+- **沙滩范围**：当前参数下沙滩区域可能过于宽阔，后续可调整 `heightScale` 阈值（如 [0.0, -0.05]）收窄过渡带。
+- **树木穿插**：在区块边界处的树木生成逻辑已加强检查，但在极高密度的森林中仍可能有少量叶片修剪瑕疵。
+
+### 3. 光照实现
+当前光照系统采用 **"CPU 预计算 AO + 静态平行光 + 着色器动态合成"** 的混合方案，兼顾了性能与体素世界的经典视觉风格。
+
+#### 3.1. 顶点光照 (Baked Lighting)
+光照信息在 Chunk Mesh 构建阶段被直接写入顶点数据 (`RenderVertex.light`)，避免了复杂的实时阴影计算。
+- **环境光遮蔽 (Ambient Occlusion, AO)**：
+  - 算法：对每个体素顶点的邻域（side1, side2, corner）进行采样检测。如果相邻方块也是实体，则会遮挡环境光。
+  - 逻辑：`occlusion` 等级（0~3）决定光照衰减系数。
+    - 0 遮挡 → 100% 亮度
+    - 1 遮挡 → 80% 亮度
+    - 2 边遮挡 → 60% 亮度
+    - 3 全角遮挡 → 40% 亮度
+  - 实现：见 `src/chunk.cpp` 中的 `vertexAO` 函数。
+- **面光照 (Face Lighting)**：
+  - 根据方块面的法线方向，应用预设的亮度乘数，增强立体感：
+    - Top (+Y): 1.2 (最亮)
+    - Front/Back (+/-Z): 1.0
+    - Right/Left (+/-X): 0.92
+    - Bottom (-Y): 0.7
+  - 这种简单的技巧使得即使在无纹理或纯色情况下，方块也能呈现出明确的体积感。
+
+#### 3.2. 全局动态光照 (Shader Synthesis)
+在 `shaders/block.frag` 中并将预计算的 AO 与实时环境参数合成。
+- **光照模型**：
+  - `Ambient = uAmbient * Albedo * AO`
+  - `Diffuse = uSunColor * Albedo * NdotL * AO` (其中 NdotL 为法线与太阳方向点积)
+  - `Total = Ambient + Diffuse`
+- **日夜循环**：
+  - `world.cpp` 中的 `updateSun` 函数驱动太阳方向 (`uSunDir`) 和颜色 (`uSunColor`)。
+  - **环境光 (uAmbient)**：从深夜的深蓝 (0.02, 0.04, 0.08) 平滑过渡到白天的天空蓝 (0.35, 0.43, 0.54)。
+  - **太阳光 (uSunColor)**：黎明/黄昏呈暖橙色，正午呈亮白色。直射光强度在日落后迅速衰减至 0。
+- **雾化系统**：
+  - 使用指数雾 (`exp(-density * dist)`) 混合天空颜色与场景，`uFogDensity` 随日夜变化（夜晚与日出时雾更浓），掩盖 Render Distance 边缘的截断。
+
+#### 3.3. 特殊材质光照
+- **自发光**：BlockInfo 中的 `emission` 属性直接叠加在顶点光照值上，使岩浆或光源方块在暗处依然可见（代码中已预留 `info.emission` 字段）。
+- **水面反射**：水面材质通过菲涅尔项 (Fresnel) 模拟太阳的高光反射，增强水体的质感。
+
+## 2026-01-19 更新日志：放置方块与滚轮切换
+
+### 1. 放置草方块/沙子/花朵的交互链路
+本次功能基于已有的 Ray Picking 与放置接口补全“可玩”的放置体验，核心路径为：
+- **Raycast 选中**：每帧通过 `world.raycast(camera.position(), camera.forward(), 8.5f)` 得到击中的方块坐标 `hit.block` 与法线 `hit.normal`。
+- **右键放置**：在按下鼠标右键时，将 `hit.block + hit.normal` 作为目标格子，调用 `world.placeBlock(place, hotbar[selectedSlot])` 写入世界方块并触发 Mesh 重建。
+- **可放置列表**：Hotbar 改为 `{Grass, Sand, Poppy, Dandelion, BlueOrchid, RedTulip, OxeyeDaisy, Cornflower}`，保证草地、沙地与多种花可直接放置。
+
+### 2. 鼠标滚轮切换方块（支持平滑滚轮）
+为兼容鼠标滚轮/触控板的细粒度增量，采用累计 delta + 步进转换的方式：
+- **滚轮回调接入**：注册 `glfwSetScrollCallback`，把 `yoffset` 累积到 `gScrollDelta`，并链式调用旧回调以保持 ImGui 的滚动行为。
+- **步进换算**：当 `gScrollDelta >= 1` 时取 `floor`，当 `<= -1` 时取 `ceil`，将结果映射为 `steps`。
+- **循环选择**：`selectedSlot = (selectedSlot - steps) % hotbar.size()`，同时对负数取模做修正，实现滚轮上下滚的循环切换。
+- **输入抑制**：当鼠标未锁定或 ImGui 需要鼠标时，直接清空滚轮 delta，避免 UI 滚动时误切换。
+
+### 3. UI 显示补全
+- `blockName` 扩展了花卉/仙人掌等新方块名称，保证 ImGui 的“方块选择”列表与实际 Hotbar 一致。
+
+本日志持续更新，用于记录 mycraft 的关键实现细节与设计决策，便于后续完善与复盘。
+
+## 2026-01-20 更新日志：准星与交互距离调整
+
+### 1. 屏幕中心准星（灰色半透明十字）
+为方便定位放置目标，在 UI 绘制阶段使用 ImGui 的前景绘制层添加了中心十字：
+- **绘制位置**：基于 `io.DisplaySize` 计算屏幕中心点。
+- **外观参数**：十字半长 8px、线宽 2px、颜色为灰色半透明（`RGBA(160,160,160,160)`）。
+- **渲染层级**：通过 `ImGui::GetForegroundDrawList()` 确保准星位于 HUD 之上且不被场景遮挡。
+
+### 2. 方块交互距离调整为 7
+将方块射线检测距离统一改为 `7.0f`，影响交互链路如下：
+- **Raycast 距离**：`world.raycast(camera.position(), camera.forward(), 7.0f)`。
+- **联动效果**：方块高亮、破坏进度、右键放置均使用同一条射线，因此最大交互距离一并更新为 7。

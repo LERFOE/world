@@ -43,8 +43,11 @@ public:
           BlockRegistry& registry,
           const AnimalUVLayout& pigUV,
           const AnimalUVLayout& cowUV,
-          const AnimalUVLayout& sheepUV);
+          const AnimalUVLayout& sheepUV,
+          int seed);
     ~World();
+
+    int getSeed() const { return seed_; }
     
     void update(const glm::vec3& cameraPos, float dt);
 
@@ -73,6 +76,14 @@ public:
 
     int chunkCount() const { return static_cast<int>(chunks_.size()); }
     int renderDistance() const { return renderDistance_; }
+
+    void setAoStrength(float v) { aoStrength_ = v; }
+    float aoStrength() const { return aoStrength_; }
+    
+    void setShadowStrength(float v) { shadowStrengthVal_ = v; }
+    float shadowStrength() const { return shadowStrengthVal_; }
+
+    void setFogDensity(float v) { fogDensity_ = v; }
 
 private:
     struct CloudLayer;
@@ -113,7 +124,7 @@ private:
     glm::ivec3 toLocal(const glm::ivec3& pos, const ChunkCoord& coord) const;
     ChunkCoord worldToChunk(int x, int z) const;
     glm::vec3 biomeColor(const glm::vec3& worldPos) const;
-    glm::vec3 sampleTint(const glm::vec3& worldPos, const BlockInfo& info) const;
+    glm::vec3 sampleTint(const glm::vec3& worldPos, BlockId id, int face) const;
     float noiseRand(int x, int z, int salt) const;
     float gaussian01(int x, int z, int salt) const;
     void growTree(Chunk& chunk, int localX, int localZ, int worldX, int worldZ, int groundHeight);
@@ -136,6 +147,10 @@ private:
     float fogDensity_ = 0.002f;
     float timeOfDay_ = 0.3f; // 0.0 - 1.0
     float daySpeed_ = 0.0033f;
+    
+    float aoStrength_ = 1.0f;
+    float shadowStrengthVal_ = 0.3f;
+    
     int renderDistance_ = 8;
     int seed_ = 12345;
     int waterLevel_ = 32;
